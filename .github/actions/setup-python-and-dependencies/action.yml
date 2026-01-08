@@ -13,7 +13,7 @@ runs:
       shell: bash
       run: pipx install poetry==${{ inputs.poetry-version }} 
 
-    - uses: actions/setup-python@v5
+    - uses: actions/setup-python@v6
       with:
         python-version: ${{ inputs.python-version }}
         cache: poetry
