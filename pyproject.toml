@@ -28,9 +28,9 @@ numpy = "^2.3.2"
 attrs = "^25.3.0"
 
 [tool.poetry.group.dev.dependencies]
-pytest = "^8.4.1"
-pytest-cov = "^6.2.1"
-pytest-mock = "^3.14.1"
+pytest = "^9.0.3"
+pytest-cov = "^7.1.0"
+pytest-mock = "^3.15.1"
 mypy = "==1.17.1"
 types-python-dateutil = "==2.9.0.20250809"  # keep version synced with actual library
 ruff = "==0.12.9"
