@@ -1,9 +1,9 @@
 [project]
 name = "abis-mapping"
-version = "9.0.1"
+version = "9.0.2-rc1"
 description = "Provides templates and mappings to translate tabular data to ABIS rdf"
 authors = [
-    {name = "Gaia Resources", email = "dev@gaiaresources.com.au"}
+    { name = "Gaia Resources", email = "dev@gaiaresources.com.au" }
 ]
 dynamic = ["requires-python", "dependencies"]
 
@@ -18,7 +18,7 @@ requires-poetry = ">=2.0.0, <3"
 python = "^3.11"
 rdflib = "==7.1.1"
 python-slugify = "^8.0.4"
-frictionless = {extras = ["excel"], version = "^5.18.1"}
+frictionless = { extras = ["excel"], version = "^5.18.1" }
 python-dateutil = "^2.9.0.post0"
 shapely = "^2.1.1"
 pyproj = "^3.7.2"
@@ -72,12 +72,12 @@ select = [
     # Default rules
     "E4", "E7", "E9", "F",
     # additional rules
-    "B",  # bugbear
-    "A",  # builtins
-    "S",  # bandit
-    "G",  # logging-format
+    "B", # bugbear
+    "A", # builtins
+    "S", # bandit
+    "G", # logging-format
     "RUF100", # unused suppressions
-    "INP001",  # no namespace packages
+    "INP001", # no namespace packages
 ]
 
 [tool.ruff.lint.per-file-ignores]
