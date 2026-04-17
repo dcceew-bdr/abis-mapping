@@ -207,6 +207,52 @@ def test_geometry_from_geosparql_wkt_literal_invalid(
         models.spatial.Geometry.from_geosparql_wkt_literal(literal_in)
 
 
+@pytest.mark.parametrize(
+    ("literal_in", "literal_out", "transformed_literal_out"),
+    [
+        # no decimals
+        (
+            "<http://www.opengis.net/def/crs/EPSG/0/7844> POINT (1 2)",
+            "<http://www.opengis.net/def/crs/EPSG/0/7844> POINT (1 2)",
+            "<http://www.opengis.net/def/crs/EPSG/0/7844> POINT (1 2)",
+        ),
+        # Decimals are preserved to same precision
+        (
+            "<http://www.opengis.net/def/crs/EPSG/0/7844> POINT (-20.00000 130.00000)",
+            "<http://www.opengis.net/def/crs/EPSG/0/7844> POINT (-20.00000 130.00000)",
+            "<http://www.opengis.net/def/crs/EPSG/0/7844> POINT (-20.00000 130.00000)",
+        ),
+        # Datum conversion is done to the same precision
+        (
+            "<http://www.opengis.net/def/crs/EPSG/0/4283> POINT (-20.000000 130.000000)",
+            "<http://www.opengis.net/def/crs/EPSG/0/4283> POINT (-20.000000 130.000000)",
+            "<http://www.opengis.net/def/crs/EPSG/0/7844> POINT (-19.999986 130.000009)",
+        ),
+    ],
+)
+def test_geometry_from_geosparql_wkt_literal_valid_preserves_point_precision(
+    literal_in: str,
+    literal_out: str,
+    transformed_literal_out: str,
+) -> None:
+    """Tests the geometry from_geosparql_wkt_literal method preserves POINT precision.
+
+    POINT precision should be preserved in the rdf literal output.
+    """
+    # Create geometry
+    geometry = models.spatial.Geometry.from_geosparql_wkt_literal(literal_in)
+
+    # Assert
+    assert geometry.to_rdf_literal() == rdflib.Literal(
+        literal_out,
+        datatype=utils.namespaces.GEO.wktLiteral,
+    )
+    assert geometry.to_transformed_crs_rdf_literal() == rdflib.Literal(
+        transformed_literal_out,
+        datatype=utils.namespaces.GEO.wktLiteral,
+    )
+
+
 def test_geometry_to_rdf_literal() -> None:
     """Tests the Geometry to_rdf_literal method."""
     # Create geometry

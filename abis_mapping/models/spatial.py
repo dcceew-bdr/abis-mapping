@@ -167,28 +167,31 @@ class Geometry:
             ValueError: If the supplied literal does not match GeoSPARQL
                 format
         """
-        # Compile regex
-        regex = re.compile(r"^(?:<(\S+)>)? ?(.*)$")
+        # Common case - Point with datum, string like "<http://www.opengis.net/def/crs/EPSG/0/4326> POINT (-33.80 115.21)"
+        # This is what SurveySiteMapper.extract_geometry_defaults() produces.
+        if match := re.match(r"^<(\S+)> ?POINT ?\(([-.0-9]+) ([-.0-9]+)\)$", str(literal)):
+            datum = match.group(1)
+            # making raw a LatLong instance means that precision of the input is preserved.
+            raw = LatLong(decimal.Decimal(match.group(2)), decimal.Decimal(match.group(3)))
 
-        # Perform match
-        match = regex.match(str(literal))
-        if match is None:
+        # Less likely - any other WKT with or without datum
+        elif match := re.match(r"^(?:<(\S+)>)? ?(.*)$", str(literal)):
+            try:
+                raw = shapely.from_wkt(match.group(2))
+            except shapely.errors.ShapelyError as exc:
+                raise GeometryError from exc
+            # Check to see if datum provided
+            datum = match.group(1)
+            if datum:
+                # Flip the coordinates from lat-long to long-lat
+                # NOTE: Assumption is that the datum provided is of lat-long orientation.
+                raw = _swap_coordinates(raw)
+
+        else:
             # NOTE 11/11/2024 @jcrowleygaia: It is currently pretty impossible for a non-match to occur
             # however it may be necessary to keep this check in case of a change to the above
             # compiled regex in the future.
             raise ValueError(f"supplied literal '{literal}' is not GeoSPARQL WKT format.")
-
-        # Attempt to make shapely geometry and catch errors
-        try:
-            raw = shapely.from_wkt(match.group(2))
-        except shapely.errors.ShapelyError as exc:
-            raise GeometryError from exc
-
-        # Check to see if datum provided
-        if datum := match.group(1):
-            # Flip the coordinates from lat-long to long-lat
-            # NOTE: Assumption is that the datum provided is of lat-long orientation.
-            raw = _swap_coordinates(raw)
 
         # Create and return Geometry object
         return Geometry(
