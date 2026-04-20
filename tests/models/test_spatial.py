@@ -2,6 +2,7 @@
 
 # Standard
 import copy
+import decimal
 
 # Third-party
 import shapely
@@ -206,6 +207,52 @@ def test_geometry_from_geosparql_wkt_literal_invalid(
         models.spatial.Geometry.from_geosparql_wkt_literal(literal_in)
 
 
+@pytest.mark.parametrize(
+    ("literal_in", "literal_out", "transformed_literal_out"),
+    [
+        # no decimals
+        (
+            "<http://www.opengis.net/def/crs/EPSG/0/7844> POINT (1 2)",
+            "<http://www.opengis.net/def/crs/EPSG/0/7844> POINT (1 2)",
+            "<http://www.opengis.net/def/crs/EPSG/0/7844> POINT (1 2)",
+        ),
+        # Decimals are preserved to same precision
+        (
+            "<http://www.opengis.net/def/crs/EPSG/0/7844> POINT (-20.00000 130.00000)",
+            "<http://www.opengis.net/def/crs/EPSG/0/7844> POINT (-20.00000 130.00000)",
+            "<http://www.opengis.net/def/crs/EPSG/0/7844> POINT (-20.00000 130.00000)",
+        ),
+        # Datum conversion is done to the same precision
+        (
+            "<http://www.opengis.net/def/crs/EPSG/0/4283> POINT (-20.000000 130.000000)",
+            "<http://www.opengis.net/def/crs/EPSG/0/4283> POINT (-20.000000 130.000000)",
+            "<http://www.opengis.net/def/crs/EPSG/0/7844> POINT (-19.999986 130.000009)",
+        ),
+    ],
+)
+def test_geometry_from_geosparql_wkt_literal_valid_preserves_point_precision(
+    literal_in: str,
+    literal_out: str,
+    transformed_literal_out: str,
+) -> None:
+    """Tests the geometry from_geosparql_wkt_literal method preserves POINT precision.
+
+    POINT precision should be preserved in the rdf literal output.
+    """
+    # Create geometry
+    geometry = models.spatial.Geometry.from_geosparql_wkt_literal(literal_in)
+
+    # Assert
+    assert geometry.to_rdf_literal() == rdflib.Literal(
+        literal_out,
+        datatype=utils.namespaces.GEO.wktLiteral,
+    )
+    assert geometry.to_transformed_crs_rdf_literal() == rdflib.Literal(
+        transformed_literal_out,
+        datatype=utils.namespaces.GEO.wktLiteral,
+    )
+
+
 def test_geometry_to_rdf_literal() -> None:
     """Tests the Geometry to_rdf_literal method."""
     # Create geometry
@@ -214,6 +261,43 @@ def test_geometry_to_rdf_literal() -> None:
     # Expected output
     expected = rdflib.Literal(
         "<http://www.opengis.net/def/crs/EPSG/0/7844> POINT (0 0)",
+        datatype=utils.namespaces.GEO.wktLiteral,
+    )
+
+    # Assert
+    assert geometry.to_rdf_literal() == expected
+
+
+@pytest.mark.parametrize(
+    ("lat_long", "rdf_output"),
+    [
+        (models.spatial.LatLong(0, 0), "0 0"),
+        (models.spatial.LatLong(-20, 115), "-20 115"),
+        (models.spatial.LatLong(-20.15, 115.26), "-20.15 115.26"),
+        (models.spatial.LatLong(-20.1500, 115.2600), "-20.15 115.26"),
+        (models.spatial.LatLong(decimal.Decimal(-20), decimal.Decimal(115)), "-20 115"),
+        (models.spatial.LatLong(decimal.Decimal("-20.1"), decimal.Decimal("115.2")), "-20.1 115.2"),
+        (models.spatial.LatLong(decimal.Decimal("-20.12"), decimal.Decimal("115.23")), "-20.12 115.23"),
+        (models.spatial.LatLong(decimal.Decimal("-20.123"), decimal.Decimal("115.234")), "-20.123 115.234"),
+        (models.spatial.LatLong(decimal.Decimal("-20.1234"), decimal.Decimal("115.2345")), "-20.1234 115.2345"),
+        (models.spatial.LatLong(decimal.Decimal("-20.12345"), decimal.Decimal("115.23456")), "-20.12345 115.23456"),
+        (models.spatial.LatLong(decimal.Decimal("-20.123456"), decimal.Decimal("115.234567")), "-20.123456 115.234567"),
+        (models.spatial.LatLong(decimal.Decimal("-20.000"), decimal.Decimal("115.000")), "-20.000 115.000"),
+        (models.spatial.LatLong(decimal.Decimal("-20.000000"), decimal.Decimal("115.000000")), "-20.000000 115.000000"),
+        (models.spatial.LatLong(decimal.Decimal("-20.00"), decimal.Decimal("115")), "-20.00 115.00"),
+    ],
+)
+def test_geometry_to_rdf_literal_precision(
+    lat_long: models.spatial.LatLong,
+    rdf_output: str,
+) -> None:
+    """Tests the Geometry to_rdf_literal method outputs a literal with same precision as the input LatLong."""
+    # Create geometry
+    geometry = models.spatial.Geometry(raw=lat_long, datum="GDA2020")
+
+    # Expected output
+    expected = rdflib.Literal(
+        f"<http://www.opengis.net/def/crs/EPSG/0/7844> POINT ({rdf_output})",
         datatype=utils.namespaces.GEO.wktLiteral,
     )
 
@@ -247,6 +331,97 @@ def test_geometry_to_tranformed_crs_rdf_literal(raw: str, datum: str, expected_s
     # Expected output
     expected = rdflib.Literal(
         lexical_or_value=expected_str,
+        datatype=utils.namespaces.GEO.wktLiteral,
+    )
+
+    # Assert
+    assert geometry.to_transformed_crs_rdf_literal() == expected
+
+
+@pytest.mark.parametrize(
+    ("lat_long", "datum", "rdf_output"),
+    [
+        # At low precision, datum conversion makes no changes to coordinates
+        (models.spatial.LatLong(decimal.Decimal("-25"), decimal.Decimal("130")), "AGD66", "-25 130"),
+        (models.spatial.LatLong(decimal.Decimal("-25"), decimal.Decimal("130")), "AGD84", "-25 130"),
+        (models.spatial.LatLong(decimal.Decimal("-25"), decimal.Decimal("130")), "GDA2020", "-25 130"),
+        (models.spatial.LatLong(decimal.Decimal("-25"), decimal.Decimal("130")), "GDA94", "-25 130"),
+        (models.spatial.LatLong(decimal.Decimal("-25"), decimal.Decimal("130")), "WGS84", "-25 130"),
+        # At 100m precision, there is a change in coordinates for one datum
+        (models.spatial.LatLong(decimal.Decimal("-25.000"), decimal.Decimal("130.000")), "AGD66", "-25.000 130.000"),
+        (models.spatial.LatLong(decimal.Decimal("-25.000"), decimal.Decimal("130.000")), "AGD84", "-24.999 130.001"),
+        (models.spatial.LatLong(decimal.Decimal("-25.000"), decimal.Decimal("130.000")), "GDA2020", "-25.000 130.000"),
+        (models.spatial.LatLong(decimal.Decimal("-25.000"), decimal.Decimal("130.000")), "GDA94", "-25.000 130.000"),
+        (models.spatial.LatLong(decimal.Decimal("-25.000"), decimal.Decimal("130.000")), "WGS84", "-25.000 130.000"),
+        # At 0.1m precision, there is a change in coordinates for two datums
+        (
+            models.spatial.LatLong(decimal.Decimal("-25.000000"), decimal.Decimal("130.000000")),
+            "AGD66",
+            "-25.000000 130.000000",
+        ),
+        (
+            models.spatial.LatLong(decimal.Decimal("-25.000000"), decimal.Decimal("130.000000")),
+            "AGD84",
+            "-24.998564 130.001327",
+        ),
+        (
+            models.spatial.LatLong(decimal.Decimal("-25.000000"), decimal.Decimal("130.000000")),
+            "GDA2020",
+            "-25.000000 130.000000",
+        ),
+        (
+            models.spatial.LatLong(decimal.Decimal("-25.000000"), decimal.Decimal("130.000000")),
+            "GDA94",
+            "-24.999986 130.000009",
+        ),
+        (
+            models.spatial.LatLong(decimal.Decimal("-25.000000"), decimal.Decimal("130.000000")),
+            "WGS84",
+            "-25.000000 130.000000",
+        ),
+        # At 0.001m precision, there is a change in coordinates for two datums
+        (
+            models.spatial.LatLong(decimal.Decimal("-25.00000000"), decimal.Decimal("130.00000000")),
+            "AGD66",
+            "-25.00000000 130.00000000",
+        ),
+        (
+            models.spatial.LatLong(decimal.Decimal("-25.00000000"), decimal.Decimal("130.00000000")),
+            "AGD84",
+            "-24.99856427 130.00132675",
+        ),
+        (
+            models.spatial.LatLong(decimal.Decimal("-25.00000000"), decimal.Decimal("130.00000000")),
+            "GDA2020",
+            "-25.00000000 130.00000000",
+        ),
+        (
+            models.spatial.LatLong(decimal.Decimal("-25.00000000"), decimal.Decimal("130.00000000")),
+            "GDA94",
+            "-24.99998621 130.00000870",
+        ),
+        (
+            models.spatial.LatLong(decimal.Decimal("-25.00000000"), decimal.Decimal("130.00000000")),
+            "WGS84",
+            "-25.00000000 130.00000000",
+        ),
+    ],
+)
+def test_geometry_to_tranformed_crs_rdf_literal_precision(
+    lat_long: models.spatial.LatLong,
+    datum: str,
+    rdf_output: str,
+) -> None:
+    """Tests the Geometry to_transformed_crs_rdf_literal method outputs a literal with same precision as the input LatLong."""
+    # Create geometry
+    geometry = models.spatial.Geometry(
+        raw=lat_long,
+        datum=datum,
+    )
+
+    # Expected output
+    expected = rdflib.Literal(
+        f"<http://www.opengis.net/def/crs/EPSG/0/7844> POINT ({rdf_output})",
         datatype=utils.namespaces.GEO.wktLiteral,
     )
 
@@ -290,3 +465,55 @@ def test_swap_coordinates_3d() -> None:
     # Should raise GeometryError
     with pytest.raises(models.spatial.GeometryError):
         models.spatial._swap_coordinates(geometry)
+
+
+@pytest.mark.parametrize(
+    ("number", "expected_decimal_places"),
+    [
+        (1, 0),
+        (10, 0),
+        (100, 0),
+        (1000, 0),
+        (-1, 0),
+        (-10, 0),
+        (-100, 0),
+        (-1000, 0),
+        (1.0, 1),
+        (1.0000, 1),
+        (1.3, 1),
+        (1.33, 2),
+        (1.333, 3),
+        (-1.0, 1),
+        (-1.0000, 1),
+        (-1.3, 1),
+        (-1.33, 2),
+        (-1.333, 3),
+        (decimal.Decimal("1"), 0),
+        (decimal.Decimal("10"), 0),
+        (decimal.Decimal("100"), 0),
+        (decimal.Decimal("-1"), 0),
+        (decimal.Decimal("-10"), 0),
+        (decimal.Decimal("-100"), 0),
+        (decimal.Decimal("1.1"), 1),
+        (decimal.Decimal("1.11"), 2),
+        (decimal.Decimal("1.111"), 3),
+        (decimal.Decimal("1.1111"), 4),
+        (decimal.Decimal("-1.1"), 1),
+        (decimal.Decimal("-1.11"), 2),
+        (decimal.Decimal("-1.111"), 3),
+        (decimal.Decimal("1.1111"), 4),
+        (decimal.Decimal("1.0"), 1),
+        (decimal.Decimal("1.00"), 2),
+        (decimal.Decimal("1.000"), 3),
+        (decimal.Decimal("1.0000"), 4),
+        (decimal.Decimal("-1.0"), 1),
+        (decimal.Decimal("-1.00"), 2),
+        (decimal.Decimal("-1.000"), 3),
+        (decimal.Decimal("-1.0000"), 4),
+    ],
+)
+def test_number_of_decimal_places(number: int | float | decimal.Decimal, expected_decimal_places: int) -> None:
+    """Tests the _num_decimal_places function."""
+    actual = models.spatial._num_decimal_places(number)
+
+    assert actual == expected_decimal_places

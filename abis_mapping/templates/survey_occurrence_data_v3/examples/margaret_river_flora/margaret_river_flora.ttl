@@ -1931,7 +1931,7 @@
     rdf:subject <https://linked.data.gov.au/dataset/bdr/00000000-0000-0000-0000-000000000000/sampling/sequencing/8022FSJMJ079c5cf> ;
     rdfs:comment "supplied as" ;
     schema:spatial [ a geo:Geometry ;
-            geo:asWKT "<http://www.opengis.net/def/crs/EPSG/0/4326> POINT (-33.8 115.21)"^^geo:wktLiteral ] .
+            geo:asWKT "<http://www.opengis.net/def/crs/EPSG/0/4326> POINT (-33.80 115.21)"^^geo:wktLiteral ] .
 
 [] a rdf:Statement ;
     rdf:object _:Nbaf38917362852ca9a9a0d2500000003 ;
@@ -1939,7 +1939,7 @@
     rdf:subject <https://linked.data.gov.au/dataset/bdr/00000000-0000-0000-0000-000000000000/sampling/sequencing/ABC123> ;
     rdfs:comment "supplied as" ;
     schema:spatial [ a geo:Geometry ;
-            geo:asWKT "<http://www.opengis.net/def/crs/EPSG/0/4326> POINT (-33.8 115.21)"^^geo:wktLiteral ] .
+            geo:asWKT "<http://www.opengis.net/def/crs/EPSG/0/4326> POINT (-33.80 115.21)"^^geo:wktLiteral ] .
 
 [] a rdf:Statement ;
     rdf:object _:N7bfc9936b099cf9353fc575500000000 ;
@@ -1947,7 +1947,7 @@
     rdf:subject <https://linked.data.gov.au/dataset/bdr/00000000-0000-0000-0000-000000000000/occurrence/1> ;
     rdfs:comment "supplied as" ;
     schema:spatial [ a geo:Geometry ;
-            geo:asWKT "<http://www.opengis.net/def/crs/EPSG/0/4326> POINT (-33.8 115.21)"^^geo:wktLiteral ] .
+            geo:asWKT "<http://www.opengis.net/def/crs/EPSG/0/4326> POINT (-33.80 115.21)"^^geo:wktLiteral ] .
 
 [] a rdf:Statement ;
     rdf:object _:N7bfc9936b099cf9353fc575500000002 ;
@@ -2035,7 +2035,7 @@
     rdf:subject <https://linked.data.gov.au/dataset/bdr/00000000-0000-0000-0000-000000000000/occurrence/12> ;
     rdfs:comment "supplied as" ;
     schema:spatial [ a geo:Geometry ;
-            geo:asWKT "<http://www.opengis.net/def/crs/EPSG/0/4326> POINT (-33.8 115.21)"^^geo:wktLiteral ] .
+            geo:asWKT "<http://www.opengis.net/def/crs/EPSG/0/4326> POINT (-33.80 115.21)"^^geo:wktLiteral ] .
 
 [] a rdf:Statement ;
     rdf:object _:N7bfc9936b099cf9353fc575500000018 ;
@@ -2060,7 +2060,7 @@
     rdf:subject <https://linked.data.gov.au/dataset/bdr/00000000-0000-0000-0000-000000000000/occurrence/8022FSJMJ079c5cf> ;
     rdfs:comment "supplied as" ;
     schema:spatial [ a geo:Geometry ;
-            geo:asWKT "<http://www.opengis.net/def/crs/EPSG/0/4326> POINT (-33.8 115.21)"^^geo:wktLiteral ;
+            geo:asWKT "<http://www.opengis.net/def/crs/EPSG/0/4326> POINT (-33.80 115.21)"^^geo:wktLiteral ;
             geo:hasMetricSpatialAccuracy 5e+01 ] .
 
 [] a rdf:Statement ;
@@ -2069,7 +2069,7 @@
     rdf:subject <https://linked.data.gov.au/dataset/bdr/00000000-0000-0000-0000-000000000000/occurrence/ABC123> ;
     rdfs:comment "supplied as" ;
     schema:spatial [ a geo:Geometry ;
-            geo:asWKT "<http://www.opengis.net/def/crs/EPSG/0/4326> POINT (-33.8 115.21)"^^geo:wktLiteral ;
+            geo:asWKT "<http://www.opengis.net/def/crs/EPSG/0/4326> POINT (-33.80 115.21)"^^geo:wktLiteral ;
             geo:hasMetricSpatialAccuracy 3e+01 ] .
 
 [] a rdf:Statement ;
@@ -2086,7 +2086,7 @@
     rdf:subject <https://linked.data.gov.au/dataset/bdr/00000000-0000-0000-0000-000000000000/sampling/specimen/8022FSJMJ079c5cf> ;
     rdfs:comment "supplied as" ;
     schema:spatial [ a geo:Geometry ;
-            geo:asWKT "<http://www.opengis.net/def/crs/EPSG/0/4326> POINT (-33.8 115.21)"^^geo:wktLiteral ] .
+            geo:asWKT "<http://www.opengis.net/def/crs/EPSG/0/4326> POINT (-33.80 115.21)"^^geo:wktLiteral ] .
 
 [] a rdf:Statement ;
     rdf:object _:Nfcd8f1042640aeab2a686b1700000005 ;
@@ -2094,10 +2094,10 @@
     rdf:subject <https://linked.data.gov.au/dataset/bdr/00000000-0000-0000-0000-000000000000/sampling/specimen/ABC123> ;
     rdfs:comment "supplied as" ;
     schema:spatial [ a geo:Geometry ;
-            geo:asWKT "<http://www.opengis.net/def/crs/EPSG/0/4326> POINT (-33.8 115.21)"^^geo:wktLiteral ] .
+            geo:asWKT "<http://www.opengis.net/def/crs/EPSG/0/4326> POINT (-33.80 115.21)"^^geo:wktLiteral ] .
 
 _:N7bfc9936b099cf9353fc575500000000 a geo:Geometry ;
-    geo:asWKT "<http://www.opengis.net/def/crs/EPSG/0/7844> POINT (-33.8 115.21)"^^geo:wktLiteral .
+    geo:asWKT "<http://www.opengis.net/def/crs/EPSG/0/7844> POINT (-33.80 115.21)"^^geo:wktLiteral .
 
 _:N7bfc9936b099cf9353fc575500000002 a geo:Geometry ;
     geo:asWKT "<http://www.opengis.net/def/crs/EPSG/0/7844> POINT (-33.86 115.01)"^^geo:wktLiteral .
@@ -2130,7 +2130,7 @@ _:N7bfc9936b099cf9353fc575500000014 a geo:Geometry ;
     geo:asWKT "<http://www.opengis.net/def/crs/EPSG/0/7844> POINT (-33.86 115.02)"^^geo:wktLiteral .
 
 _:N7bfc9936b099cf9353fc575500000016 a geo:Geometry ;
-    geo:asWKT "<http://www.opengis.net/def/crs/EPSG/0/7844> POINT (-33.8 115.21)"^^geo:wktLiteral .
+    geo:asWKT "<http://www.opengis.net/def/crs/EPSG/0/7844> POINT (-33.80 115.21)"^^geo:wktLiteral .
 
 _:N7bfc9936b099cf9353fc575500000018 a geo:Geometry ;
     geo:asWKT "<http://www.opengis.net/def/crs/EPSG/0/7844> POINT (-33.86 115.02)"^^geo:wktLiteral .
@@ -2140,19 +2140,19 @@ _:N7bfc9936b099cf9353fc57550000001a a geo:Geometry ;
     geo:hasMetricSpatialAccuracy 2e+01 .
 
 _:N7bfc9936b099cf9353fc57550000001c a geo:Geometry ;
-    geo:asWKT "<http://www.opengis.net/def/crs/EPSG/0/7844> POINT (-33.8 115.21)"^^geo:wktLiteral ;
+    geo:asWKT "<http://www.opengis.net/def/crs/EPSG/0/7844> POINT (-33.80 115.21)"^^geo:wktLiteral ;
     geo:hasMetricSpatialAccuracy 5e+01 .
 
 _:N7bfc9936b099cf9353fc57550000001e a geo:Geometry ;
-    geo:asWKT "<http://www.opengis.net/def/crs/EPSG/0/7844> POINT (-33.8 115.21)"^^geo:wktLiteral ;
+    geo:asWKT "<http://www.opengis.net/def/crs/EPSG/0/7844> POINT (-33.80 115.21)"^^geo:wktLiteral ;
     geo:hasMetricSpatialAccuracy 3e+01 .
 
 _:Nbaf38917362852ca9a9a0d2500000001 a geo:Geometry ;
-    geo:asWKT "<http://www.opengis.net/def/crs/EPSG/0/7844> POINT (-33.8 115.21)"^^geo:wktLiteral ;
+    geo:asWKT "<http://www.opengis.net/def/crs/EPSG/0/7844> POINT (-33.80 115.21)"^^geo:wktLiteral ;
     rdfs:comment "Location unknown, location of field sampling used as proxy" .
 
 _:Nbaf38917362852ca9a9a0d2500000003 a geo:Geometry ;
-    geo:asWKT "<http://www.opengis.net/def/crs/EPSG/0/7844> POINT (-33.8 115.21)"^^geo:wktLiteral ;
+    geo:asWKT "<http://www.opengis.net/def/crs/EPSG/0/7844> POINT (-33.80 115.21)"^^geo:wktLiteral ;
     rdfs:comment "Location unknown, location of field sampling used as proxy" .
 
 _:Nfcd8f1042640aeab2a686b1700000001 a geo:Geometry ;
@@ -2160,10 +2160,10 @@ _:Nfcd8f1042640aeab2a686b1700000001 a geo:Geometry ;
     rdfs:comment "Location unknown, location of field sampling used as proxy" .
 
 _:Nfcd8f1042640aeab2a686b1700000003 a geo:Geometry ;
-    geo:asWKT "<http://www.opengis.net/def/crs/EPSG/0/7844> POINT (-33.8 115.21)"^^geo:wktLiteral ;
+    geo:asWKT "<http://www.opengis.net/def/crs/EPSG/0/7844> POINT (-33.80 115.21)"^^geo:wktLiteral ;
     rdfs:comment "Location unknown, location of field sampling used as proxy" .
 
 _:Nfcd8f1042640aeab2a686b1700000005 a geo:Geometry ;
-    geo:asWKT "<http://www.opengis.net/def/crs/EPSG/0/7844> POINT (-33.8 115.21)"^^geo:wktLiteral ;
+    geo:asWKT "<http://www.opengis.net/def/crs/EPSG/0/7844> POINT (-33.80 115.21)"^^geo:wktLiteral ;
     rdfs:comment "Location unknown, location of field sampling used as proxy" .
 

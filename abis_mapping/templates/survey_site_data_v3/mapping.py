@@ -228,7 +228,7 @@ class SurveySiteMapper(base.mapper.ABISMapper):
                         # Create string and add to map for site id
                         result[site_identifier] = str(
                             models.spatial.Geometry(
-                                raw=shapely.Point([float(longitude), float(latitude)]),
+                                raw=models.spatial.LatLong(latitude, longitude),
                                 datum=datum,
                             ).to_rdf_literal()
                         )

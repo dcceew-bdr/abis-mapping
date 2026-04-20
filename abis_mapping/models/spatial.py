@@ -37,6 +37,8 @@ class LatLong(NamedTuple):
 class Geometry:
     """Class for all geographical coordinate transformations."""
 
+    _precision: int | None = None  # Number of decimal places in the input geometry coordinates
+
     def __init__(
         self,
         raw: LatLong | str | shapely.Geometry,
@@ -63,6 +65,7 @@ class Geometry:
         if isinstance(raw, LatLong):
             # Make shapely point
             self._geometry: shapely.Geometry = shapely.Point(raw.longitude, raw.latitude)
+            self._precision = max(_num_decimal_places(coord) for coord in raw)
         elif isinstance(raw, str):
             # Attempt to make shapely geometry and catch errors
             try:
@@ -164,28 +167,31 @@ class Geometry:
             ValueError: If the supplied literal does not match GeoSPARQL
                 format
         """
-        # Compile regex
-        regex = re.compile(r"^(?:<(\S+)>)? ?(.*)$")
+        # Common case - Point with datum, string like "<http://www.opengis.net/def/crs/EPSG/0/4326> POINT (-33.80 115.21)"
+        # This is what SurveySiteMapper.extract_geometry_defaults() produces.
+        if match := re.match(r"^<(\S+)> ?POINT ?\(([-.0-9]+) ([-.0-9]+)\)$", str(literal)):
+            datum = match.group(1)
+            # making raw a LatLong instance means that precision of the input is preserved.
+            raw = LatLong(decimal.Decimal(match.group(2)), decimal.Decimal(match.group(3)))
 
-        # Perform match
-        match = regex.match(str(literal))
-        if match is None:
+        # Less likely - any other WKT with or without datum
+        elif match := re.match(r"^(?:<(\S+)>)? ?(.*)$", str(literal)):
+            try:
+                raw = shapely.from_wkt(match.group(2))
+            except shapely.errors.ShapelyError as exc:
+                raise GeometryError from exc
+            # Check to see if datum provided
+            datum = match.group(1)
+            if datum:
+                # Flip the coordinates from lat-long to long-lat
+                # NOTE: Assumption is that the datum provided is of lat-long orientation.
+                raw = _swap_coordinates(raw)
+
+        else:
             # NOTE 11/11/2024 @jcrowleygaia: It is currently pretty impossible for a non-match to occur
             # however it may be necessary to keep this check in case of a change to the above
             # compiled regex in the future.
             raise ValueError(f"supplied literal '{literal}' is not GeoSPARQL WKT format.")
-
-        # Attempt to make shapely geometry and catch errors
-        try:
-            raw = shapely.from_wkt(match.group(2))
-        except shapely.errors.ShapelyError as exc:
-            raise GeometryError from exc
-
-        # Check to see if datum provided
-        if datum := match.group(1):
-            # Flip the coordinates from lat-long to long-lat
-            # NOTE: Assumption is that the datum provided is of lat-long orientation.
-            raw = _swap_coordinates(raw)
 
         # Create and return Geometry object
         return Geometry(
@@ -208,10 +214,7 @@ class Geometry:
         geometry = _swap_coordinates(self._geometry) if datum_string else self._geometry
 
         # Construct  and return rdf literal
-        wkt_string = shapely.to_wkt(
-            geometry=geometry,
-            rounding_precision=settings.SETTINGS.DEFAULT_WKT_ROUNDING_PRECISION,
-        )
+        wkt_string = self._to_wkt_string(geometry)
 
         return rdflib.Literal(
             lexical_or_value=datum_string + wkt_string,
@@ -233,14 +236,28 @@ class Geometry:
         geometry = _swap_coordinates(self._transformed_geometry) if datum_string else self._transformed_geometry
 
         # Construct and return rdf literal
-        wkt_string = shapely.to_wkt(
-            geometry=geometry,
-            rounding_precision=settings.SETTINGS.DEFAULT_WKT_ROUNDING_PRECISION,
-        )
+        wkt_string = self._to_wkt_string(geometry)
         return rdflib.Literal(
             lexical_or_value=datum_string + wkt_string,
             datatype=namespaces.GEO.wktLiteral,
         )
+
+    def _to_wkt_string(self, geometry: shapely.Geometry) -> str:
+        """Transform geometry to WKT string, using precision if available."""
+        wkt_string: str
+        if self._precision is not None:
+            wkt_string = shapely.to_wkt(
+                geometry=geometry,
+                # Round to the precision of the input, without trimming significant trailing zeros
+                rounding_precision=self._precision,
+                trim=False,
+            )
+        else:
+            wkt_string = shapely.to_wkt(
+                geometry=geometry,
+                rounding_precision=settings.SETTINGS.DEFAULT_WKT_ROUNDING_PRECISION,
+            )
+        return wkt_string
 
 
 def _swap_coordinates(original: shapely.Geometry) -> shapely.Geometry:
@@ -266,6 +283,21 @@ def _swap_coordinates(original: shapely.Geometry) -> shapely.Geometry:
 
     # Return transformed geometry
     return txd
+
+
+def _num_decimal_places(number: float | int | decimal.Decimal, /) -> int:
+    """Determine the number of decimal places in a number."""
+    if isinstance(number, decimal.Decimal):
+        decimal_number = number
+    else:
+        # Note the str() is important so that floats are 'rounded' to their approximate value.
+        # e.g. '1.1' instead of 1.100000000000000088817841970012523233890533447265625
+        decimal_number = decimal.Decimal(str(number))
+
+    exponent = decimal_number.as_tuple().exponent
+    if isinstance(exponent, int):
+        return abs(exponent)
+    raise ValueError(f"Cant count decimal places of: {decimal_number}")
 
 
 class GeometryError(Exception):

@@ -92,16 +92,16 @@ def test_extract_geometry_defaults(
         ): "<http://www.opengis.net/def/crs/EPSG/0/4326> POINT (2.5 2.5)",
         (
             models.identifier.SiteIdentifier(site_id="site3", site_id_source="ORG", existing_bdr_site_iri=None)
-        ): "<http://www.opengis.net/def/crs/EPSG/0/4326> POINT (20 10)",
+        ): "<http://www.opengis.net/def/crs/EPSG/0/4326> POINT (20.0 10.0)",
         (
             models.identifier.SiteIdentifier(site_id="site4", site_id_source="ORG", existing_bdr_site_iri=None)
-        ): "<http://www.opengis.net/def/crs/EPSG/0/4202> POINT (20 10)",
+        ): "<http://www.opengis.net/def/crs/EPSG/0/4202> POINT (20.0 10.0)",
         (
             models.identifier.SiteIdentifier(site_id="site5", site_id_source="ORG", existing_bdr_site_iri=None)
-        ): "<http://www.opengis.net/def/crs/EPSG/0/4202> POINT (21 11)",
+        ): "<http://www.opengis.net/def/crs/EPSG/0/4202> POINT (21.0 11.0)",
         (
             models.identifier.SiteIdentifier(site_id=None, site_id_source=None, existing_bdr_site_iri="SITE-IRI")
-        ): "<http://www.opengis.net/def/crs/EPSG/0/4326> POINT (25 15)",
+        ): "<http://www.opengis.net/def/crs/EPSG/0/4326> POINT (25.0 15.0)",
     }
     # Invoke method
     assert hasattr(mapper, "extract_geometry_defaults")
