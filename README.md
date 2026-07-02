@@ -4,7 +4,6 @@ This repository contains a set of template files (Excel, CSV, Geopackage) used t
 representation conforming to the Australia Biodiversity Information Standard (ABIS)
 
 ## ABIS Links
-* [GitHub](https://github.com/surroundaustralia/abis)
 * [Specification Document]()
 
 ## Templates
