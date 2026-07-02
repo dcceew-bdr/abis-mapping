@@ -19,7 +19,7 @@ class _Settings(pydantic_settings.BaseSettings):
     DEFAULT_TARGET_CRS: str = "GDA2020"
 
     # Base url for the instructions site
-    INSTRUCTIONS_BASE_URL: str = "https://gaiaresources.github.io/abis-mapping/"
+    INSTRUCTIONS_BASE_URL: str = "https://dcceew-bdr.github.io/abis-mapping/"
 
     # The version of the documents to be selected
     INSTRUCTIONS_VERSION: str = "dev"

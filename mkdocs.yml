@@ -1,7 +1,7 @@
 site_name: BDR ABIS Mapping
-site_url: https://gaiaresources.github.io/abis-mappping/
-repo_url: https://github.com/gaiaresources/abis-mapping/
-repo_name: gaiaresources/abis-mapping
+site_url: https://dcceew-bdr.github.io/abis-mappping/
+repo_url: https://github.com/dcceew-bdr/abis-mapping/
+repo_name: dcceew-bdr/abis-mapping
 theme:
   name: material
   icon:
