@@ -114,7 +114,7 @@ class Vocabulary(abc.ABC):
             raise ValueError(f"Vocabulary {self.vocab_id} requires a base for RDF export")
 
         graph = rdflib.Graph()
-        scheme = rdflib.URIRef(str(namespaces.DATASET_BDR) + self.base)
+        scheme = rdflib.URIRef(str(namespaces.DATASET_BDR) + self.base.strip("/"))
         graph.bind("cs", rdflib.Namespace(str(scheme)))
         graph.bind("schema", rdflib.SDO)
         graph.bind("skos", rdflib.SKOS)
@@ -128,6 +128,7 @@ class Vocabulary(abc.ABC):
             paragraphs.append("This is a closed vocabulary")
         if broader := getattr(self, "broader", None):
             paragraphs.append(f"Proposed as narrower terms of {broader}")
+        paragraphs.append("This vocabulary was generated from application code used to convert CSV data to ABIS RDF in the repository https://github.com/dcceew-bdr/abis-mapping.")
         graph.add((scheme, rdflib.SKOS.definition, rdflib.Literal("\n\n".join(paragraphs), lang="en")))
         graph.add((scheme, rdflib.SDO.dateCreated, rdflib.Literal(datetime.date(2026, 9, 20))))
         graph.add((scheme, rdflib.SDO.dateModified, rdflib.Literal(datetime.date.today())))
