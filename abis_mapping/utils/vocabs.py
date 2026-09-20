@@ -3,6 +3,7 @@
 # Standard
 import abc
 import datetime
+from pathlib import Path
 
 # Third-Party
 import rdflib
@@ -96,6 +97,61 @@ class Vocabulary(abc.ABC):
     vocab_id: str
     terms: Iterable[Term]
     publish: bool = True
+    base: str
+
+    def export_as_rdf(self, destination: str | Path) -> Path:
+        """Export declared terms as a SKOS vocabulary in Turtle.
+
+        The Conceopt Scheme IRI is the BDR dataset namespace plus ``base``. Runtime
+        generated terms, lookup defaults and proposed schemes are not exported.
+        Creation date records the original export release; modification date
+        uses the local date on each run. Returns the written file path.
+        """
+        path = Path(destination).expanduser()
+        if path.suffix != ".ttl":
+            raise ValueError("Vocabulary export destination must have a .ttl suffix")
+        if not getattr(self, "base", None):
+            raise ValueError(f"Vocabulary {self.vocab_id} requires a base for RDF export")
+
+        graph = rdflib.Graph()
+        scheme = rdflib.URIRef(str(namespaces.DATASET_BDR) + self.base.strip("/"))
+        graph.bind("cs", rdflib.Namespace(str(scheme)))
+        graph.bind("schema", rdflib.SDO)
+        graph.bind("skos", rdflib.SKOS)
+        graph.bind("rdfs", rdflib.RDFS)
+        graph.add((scheme, a, rdflib.SKOS.ConceptScheme))
+        graph.add((scheme, rdflib.SKOS.prefLabel, rdflib.Literal(self.vocab_id.replace("_", " ").title(), lang="en")))
+        paragraphs = [str(getattr(self, "definition", f"Vocabulary for {self.vocab_id.lower().replace('_', ' ')}."))]
+        if isinstance(self, FlexibleVocabulary):
+            paragraphs.append("This is an open-ended vocabulary")
+        elif isinstance(self, RestrictedVocabulary):
+            paragraphs.append("This is a closed vocabulary")
+        if broader := getattr(self, "broader", None):
+            paragraphs.append(f"Proposed as narrower terms of {broader}")
+        paragraphs.append("This vocabulary was generated from application code used to convert CSV data to ABIS RDF in the repository https://github.com/dcceew-bdr/abis-mapping.")
+        graph.add((scheme, rdflib.SKOS.definition, rdflib.Literal("\n\n".join(paragraphs), lang="en")))
+        graph.add((scheme, rdflib.SDO.dateCreated, rdflib.Literal(datetime.date(2026, 9, 20))))
+        graph.add((scheme, rdflib.SDO.dateModified, rdflib.Literal(datetime.date.today())))
+        for predicate, iri in (
+            (rdflib.SDO.creator, "https://linked.data.gov.au/org/bdr-team"),
+            (rdflib.SDO.publisher, "https://linked.data.gov.au/org/dcceew"),
+            (rdflib.SDO.codeRepository, "https://github.com/dcceew-bdr/resources.bdr.gov.au-data/"),
+            (rdflib.SDO.license, "http://purl.org/NET/rdflicense/cc-by4.0"),
+        ):
+            graph.add((scheme, predicate, rdflib.URIRef(iri)))
+        for term in self.terms:
+            graph.add((term.iri, a, rdflib.SKOS.Concept))
+            if term.preferred_label is not None:
+                graph.add((term.iri, rdflib.SKOS.prefLabel, rdflib.Literal(term.preferred_label, lang="en")))
+            for label in term.alternative_labels:
+                graph.add((term.iri, rdflib.SKOS.altLabel, rdflib.Literal(label, lang="en")))
+            graph.add((term.iri, rdflib.SKOS.definition, rdflib.Literal(term.description, lang="en")))
+            graph.add((scheme, rdflib.SKOS.hasTopConcept, term.iri))
+            for predicate in (rdflib.RDFS.isDefinedBy, rdflib.SKOS.topConceptOf, rdflib.SKOS.inScheme):
+                graph.add((term.iri, predicate, scheme))
+        path.parent.mkdir(parents=True, exist_ok=True)
+        graph.serialize(destination=path, format="longturtle")
+        return path
 
     def __init__(self) -> None:
         """Vocabulary constructor."""

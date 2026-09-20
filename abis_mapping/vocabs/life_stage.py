@@ -121,7 +121,7 @@ LARVA = utils.vocabs.Term(
         "NYMPH",
         "CATERPILLAR",
     ),
-    iri=rdflib.URIRef("http://linked.data.gov.au/def/tern-cv/d22c90e2-301b-47b7-bef2-23496aef8313"),  # real URI
+    iri=rdflib.URIRef("http://linked.data.gov.au/def/tern-cv/511e0ae9-f0c0-45ca-9380-9a332f2b9563"),  # real URI
     description=(
         "A larva (Latin; plural larvae) is a young (juvenile) form of animal with "
         "indirect development, going through or undergoing metamorphosis (for "

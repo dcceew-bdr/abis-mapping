@@ -209,14 +209,9 @@ ULTRASONIC_RECORDING_DEVICE = utils.vocabs.Term(
     description="Ultrasound recorders are devices that send high-frequency sound waves in the environment to create images or detect objects and movements within various mediums, such as a mammalian body or other environments. They are popular for wildlife monitoring, biodiversity surveys, habitat assessments and echolocation studies (e.g., bats).",
 )
 UNKNOWN = utils.vocabs.Term(
-    labels=("UNKNOWN",),
+    labels=("UNKNOWN","UNKNOWN_TRAP_TYPE",),
     iri=rdflib.URIRef("https://linked.data.gov.au/def/nrm/f6b0f6d8-16d8-5dd7-b1b7-66b0c020b96f"),
     description="Refers to the fire history of the plot, unknown., Unknown (unable to be determined)., Unknown capture status., Unknown position., Unknown- unable to be determined., Unknown/unable to be determined.",
-)
-UNKNOWN_TRAP_TYPE = utils.vocabs.Term(
-    labels=("UNKNOWN TRAP TYPE",),
-    iri=rdflib.URIRef("https://linked.data.gov.au/def/nrm/f6b0f6d8-16d8-5dd7-b1b7-66b0c020b96f"),
-    description="Refers to the fire history of the plot, unknown., Unknown (unable to be determined)., Unknown capture status., Unknown position., Unknown, unable to be determined., Unknown/unable to be determined.",
 )
 UNSPECIFIED_METHOD = utils.vocabs.Term(
     labels=("UNSPECIFIED",),
@@ -285,7 +280,6 @@ class VisitProtocolName(utils.vocabs.FlexibleVocabulary):
         TRACKING_PAD,
         ULTRASONIC_RECORDING_DEVICE,
         UNKNOWN,
-        UNKNOWN_TRAP_TYPE,
         UNSPECIFIED_METHOD,
         WATER_SAMPLE,
         WET_PITFALL_TRAP,
