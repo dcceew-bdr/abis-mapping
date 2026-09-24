@@ -64,7 +64,7 @@ BURROW = utils.vocabs.Term(
     description="A burrow is a hole or tunnel excavated into the ground by an animal to create a space suitable for habitation, temporary refuge, or as a byproduct of locomotion., Burrow is a small tunnel or a hole made by certain ground-dwelling mammals as a place of refuge., Refers to the microhabitat where the targeted fauna was observed. A burrow is a hole or tunnel excavated into the ground by an animal to create a space suitable for habitation, temporary refuge, or as a byproduct of locomotion.",
 )
 CAGE_TRAP = utils.vocabs.Term(
-    labels=("CAGE TRAP",),
+    labels=("CAGE TRAP", "CAT"),
     iri=rdflib.URIRef("https://linked.data.gov.au/def/nrm/8f6764de-0f3e-5f6f-b86e-e5e9f6053e24"),
     description="A cage trap is a trap made of metal or galvanised mesh, normally used for trapping mammals., The equipment/method used during a passive, 'targeted fauna survey'. A cage trap is a trap made of metal or galvanised mesh and used in trapping mammals.",
 )
@@ -84,7 +84,7 @@ EGGS_EGGSHELL = utils.vocabs.Term(
     description="An animal egg, or ovum, is the female reproductive cell (gamete) in many animals and vay in shape, size and structure. Egg shells are outer protctive layer that surrounds the egg of many animals. The animal eggs/egg shells here represent particular life stage of animal and often used as a sign/evidence to detect their presence in its habitat.",
 )
 ELLIOTT_TRAP = utils.vocabs.Term(
-    labels=("ELLIOTT TRAP",),
+    labels=("ELLIOTT TRAP", "ELT"),
     iri=rdflib.URIRef("https://linked.data.gov.au/def/nrm/d1bdaf17-c484-59c6-84a0-8344a5ce5b5c"),
     description="The equipment/method used during a passive, 'fauna survey'. Elliott trapping is a technique used to trap small to medium sized mammals. The are usually hinged design that allows trapping to be conducted by folding into a compact panel and easy transport to field locations and storage., The equipment/method used during a passive, 'targeted fauna survey'. Elliott trapping is a technique used to trap small to medium sized mammals. The are usually hinged design that allows trapping to be conducted by folding into a compact panel and easy transport to field locations and storage.",
 )
@@ -104,7 +104,7 @@ FOSSIL_SUBFOSSIL = utils.vocabs.Term(
     description="Fossils are preserved remains of animal or plant parts, usually of a prehistoric origin. Whereas, a sub-fossil are remains (usually skeletal) of animals that are not ancient enough to qualify as a fossil.",
 )
 FUNNEL_TRAP = utils.vocabs.Term(
-    labels=("FUNNEL TRAP",),
+    labels=("FUNNEL TRAP", "FUT"),
     iri=rdflib.URIRef("https://linked.data.gov.au/def/nrm/970058a7-946d-5a5d-bb5b-c5b801a4def4"),
     description="The equipment/method used in a 'fauna survey'. Funnel trap is a trapping method used in trapping insects/invertebrates. Funnel traps are made of nested black funnels (up to as many as 12). Insects fall through the funnels to a cup that is filled with a preservative., The equipment/method used in a 'targeted fauna survey'. Funnel trap is a trapping method used in trapping insects/invertebrates. Funnel traps are made of nested black funnels (up to as many as 12). Insects fall through the funnels to a cup that is filled with a preservative.",
 )
@@ -114,12 +114,12 @@ GPS_TRACKING = utils.vocabs.Term(
     description="Geospatial tracking devices are portable units designed to monitor and track location. They use satellite navigation to determine movement and establish geographic positions.",
 )
 HAIR_TUBE = utils.vocabs.Term(
-    labels=("HAIR TUBE",),
+    labels=("HAIR TUBE", "HTS"),
     iri=rdflib.URIRef("https://linked.data.gov.au/def/nrm/7ed366d3-9c85-5974-863d-127d1ff103ce"),
     description="Hair Tubes are short sections of PVC pipe lined with pieces of double-sided sticky-tape and useful to obtain hair/fur samples of animals., Refers to the targeted fauna observation method, i.e., any observations on a fauna made using 'Hair Tubes', which are short sections of PVC pipe lined with pieces of double-sided sticky-tape.",
 )
 HARP_TRAP = utils.vocabs.Term(
-    labels=("HARP TRAP",),
+    labels=("HARP TRAP", "BAT"),
     iri=rdflib.URIRef("https://linked.data.gov.au/def/nrm/b7a02786-f651-5199-877b-96d5dc4c66c6"),
     description="Refers to the fauna observation method, i.e., any observations made on a fauna captured in a 'Harp trap' (especially designed for bats). They are particularly useful in situations where bats in flight can be channeled through a natural funnel such as above a water course, a cave or mine entrance or a clear area within a forest.",
 )
@@ -144,7 +144,7 @@ MALAISE_TRAP = utils.vocabs.Term(
     description="A Malaise trap is a type of insect trap primarily used to capture invertebrates. They are large, tent-like structure effective in capturing flying insects (e.g., members of Hymenoptera and Diptera)., Refers to the targeted fauna observation method, i.e., any observations on a fauna captured using a malaise trap. A Malaise trap is a type of insect trap primarily used to capture invertebrates. They are large, tent-like structure effective in capturing flying insects (e.g., members of Hymenoptera and Diptera).",
 )
 MIST_NET = utils.vocabs.Term(
-    labels=("MIST NET",),
+    labels=("MIST NET", "MIT"),
     iri=rdflib.URIRef("https://linked.data.gov.au/def/nrm/8ca1c330-b64a-5f97-aab4-9023fddaf009"),
     description="Refers to the fauna observation method, i.e., any observations on a fauna captured using mist nets. The net is made of a very fine diameter cord, which is almost invisible when set up and is often used to capture birds, because they fail to see it, and fly straight into it., Refers to the targeted fauna observation method, i.e., any observations on a fauna captured using mist nets. The net is made of a very fine diameter cord, which is almost invisible when set up and is often used to capture birds, because they fail to see it, and fly straight into it.",
 )
@@ -164,7 +164,7 @@ NONE = utils.vocabs.Term(
     description="Refers to No observation method of a target fauna., Refers to the targeted fauna observation method, i.e., 'No' standard observation methods were applied.",
 )
 OBSERVATION_METHOD_AFTER_CALL_PLAYBACK = utils.vocabs.Term(
-    labels=("OBSERVATION METHOD - AFTER CALL PLAYBACK",),
+    labels=("OBSERVATION METHOD - AFTER CALL PLAYBACK", "PLY"),
     iri=rdflib.URIRef("https://linked.data.gov.au/def/nrm/c85935df-7a5d-4321-9915-efb7116e9020"),
     description="After call playback, is a method used for fauna observations (usually birds) and involves pre-recorded call playback to detect the presence of a target species in the survey area.",
 )
@@ -194,7 +194,7 @@ PELLET_WITHIN = utils.vocabs.Term(
     description="Pellets are fecal droppings of animals such as goat, rats, rabbits, wombats, etc., and are often used as a sign/evidence of the presence of the species in the environment. 'Within pellet' here represents an observation method (tier-2) that involves searching for any signs/evidence of a fauna species within a scat.",
 )
 PITFALL_TRAP = utils.vocabs.Term(
-    labels=("PITFALL TRAP",),
+    labels=("PITFALL TRAP", "PIT"),
     iri=rdflib.URIRef("https://linked.data.gov.au/def/nrm/aa78fa0e-3bd0-5c87-8ac7-0779f0699a11"),
     description="Refers to the fauna observation method, i.e., any observations made from fauna captures in a pitfall trap. A pitfall trap is a simple device used to catch small animals , particularly insects and other invertebrates , that spend most of their time on the ground., Refers to the targeted fauna observation method, i.e., any observations made from fauna captures in a pitfall trap. A pitfall trap is a simple device used to catch small animals , particularly insects and other invertebrates , that spend most of their time on the ground.",
 )
@@ -204,7 +204,7 @@ RADIO_TRACKING = utils.vocabs.Term(
     description="Refers to the fauna observation method, i.e., any signs of a fauna with the assistance of radio tracking device/s.",
 )
 REMOTE_CAMERA_DEVICE = utils.vocabs.Term(
-    labels=("REMOTE CAMERA DEVICE",),
+    labels=("REMOTE CAMERA DEVICE", "CAM"),
     iri=rdflib.URIRef("https://linked.data.gov.au/def/nrm/d9ded7e1-e012-53c0-a612-3f5585281cef"),
     description="Remote camera device are special devices that can be programmed to capture media (picture, videos) in places where humans cannot be physically present, and can be controlled remotely over a wireless network.",
 )
@@ -244,7 +244,7 @@ SIGHTING = utils.vocabs.Term(
     description="An observation method made by direct sighting of fauna in its habitat.",
 )
 SPOTLIGHTING = utils.vocabs.Term(
-    labels=("SPOTLIGHTING",),
+    labels=("SPOTLIGHTING", "SPT"),
     iri=rdflib.URIRef("https://linked.data.gov.au/def/nrm/db0cb2f2-e9f8-5679-a566-afce45b28da0"),
     description="Spotlighting technique is a method used for fauna observations during the night and assists surveyors target nocturnal animals, using off-road vehicles and high-powered lights, spotlights, lamps or flashlights.",
 )
@@ -259,12 +259,12 @@ TRACKING_PAD = utils.vocabs.Term(
     description="A tracking pad is an artificial pad made of loose material (such as sand for example) that are used to study and observe animal tracks. These pads are often designed to be delpoyed in habitats where animal activity/movements are high., Refers to the type of substrate used for fauna signs-based observation. A tracking pad is an artificial pad made of loose material (such as sand for example) that are used to study animal tracks in a fauna survey.",
 )
 ULTRASONIC_RECORDING_DEVICE = utils.vocabs.Term(
-    labels=("ULTRASONIC RECORDING DEVICE",),
+    labels=("ULTRASONIC RECORDING DEVICE", "ANA"),
     iri=rdflib.URIRef("https://linked.data.gov.au/def/nrm/e405c9c0-2c1f-5dee-8d63-1edfc6ee5b36"),
     description="Ultrasound recorders are devices that send high-frequency sound waves in the environment to create images or detect objects and movements within various mediums, such as a mammalian body or other environments. They are popular for wildlife monitoring, biodiversity surveys, habitat assessments and echolocation studies (e.g., bats).",
 )
 UNKNOWN = utils.vocabs.Term(
-    labels=("UNKNOWN",),
+    labels=("UNKNOWN", "UNK"),
     iri=rdflib.URIRef("https://linked.data.gov.au/def/nrm/f6b0f6d8-16d8-5dd7-b1b7-66b0c020b96f"),
     description="Refers to the fire history of the plot, unknown., Unknown (unable to be determined)., Unknown capture status., Unknown position., Unknown- unable to be determined., Unknown/unable to be determined.",
 )
