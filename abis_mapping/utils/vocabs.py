@@ -99,10 +99,11 @@ class Vocabulary(abc.ABC):
     publish: bool = True
     base: str
 
-    def export_as_rdf(self, destination: str | Path) -> Path:
+    @classmethod
+    def export_as_rdf(cls, destination: str | Path) -> Path:
         """Export declared terms as a SKOS vocabulary in Turtle.
 
-        The Conceopt Scheme IRI is the BDR dataset namespace plus ``base``. Runtime
+        The Concept Scheme IRI is the BDR dataset namespace plus ``base``. Runtime
         generated terms, lookup defaults and proposed schemes are not exported.
         Creation date records the original export release; modification date
         uses the local date on each run. Returns the written file path.
@@ -110,25 +111,27 @@ class Vocabulary(abc.ABC):
         path = Path(destination).expanduser()
         if path.suffix != ".ttl":
             raise ValueError("Vocabulary export destination must have a .ttl suffix")
-        if not getattr(self, "base", None):
-            raise ValueError(f"Vocabulary {self.vocab_id} requires a base for RDF export")
+        if not getattr(cls, "base", None):
+            raise ValueError(f"Vocabulary {cls.vocab_id} requires a base for RDF export")
 
         graph = rdflib.Graph()
-        scheme = rdflib.URIRef(str(namespaces.DATASET_BDR) + self.base.strip("/"))
+        scheme = rdflib.URIRef(str(namespaces.DATASET_BDR) + cls.base.strip("/"))
         graph.bind("cs", rdflib.Namespace(str(scheme)))
         graph.bind("schema", rdflib.SDO)
         graph.bind("skos", rdflib.SKOS)
         graph.bind("rdfs", rdflib.RDFS)
         graph.add((scheme, a, rdflib.SKOS.ConceptScheme))
-        graph.add((scheme, rdflib.SKOS.prefLabel, rdflib.Literal(self.vocab_id.replace("_", " ").title(), lang="en")))
-        paragraphs = [str(getattr(self, "definition", f"Vocabulary for {self.vocab_id.lower().replace('_', ' ')}."))]
-        if isinstance(self, FlexibleVocabulary):
+        graph.add((scheme, rdflib.SKOS.prefLabel, rdflib.Literal(cls.vocab_id.replace("_", " ").title(), lang="en")))
+        paragraphs = [str(getattr(cls, "definition", f"Vocabulary for {cls.vocab_id.lower().replace('_', ' ')}."))]
+        if issubclass(cls, FlexibleVocabulary):
             paragraphs.append("This is an open-ended vocabulary")
-        elif isinstance(self, RestrictedVocabulary):
+        elif issubclass(cls, RestrictedVocabulary):
             paragraphs.append("This is a closed vocabulary")
-        if broader := getattr(self, "broader", None):
+        if broader := getattr(cls, "broader", None):
             paragraphs.append(f"Proposed as narrower terms of {broader}")
-        paragraphs.append("This vocabulary was generated from application code used to convert CSV data to ABIS RDF in the repository https://github.com/dcceew-bdr/abis-mapping.")
+        paragraphs.append(
+            "This vocabulary was generated from application code used to convert CSV data to ABIS RDF in the repository https://github.com/dcceew-bdr/abis-mapping."
+        )
         graph.add((scheme, rdflib.SKOS.definition, rdflib.Literal("\n\n".join(paragraphs), lang="en")))
         graph.add((scheme, rdflib.SDO.dateCreated, rdflib.Literal(datetime.date(2026, 9, 20))))
         graph.add((scheme, rdflib.SDO.dateModified, rdflib.Literal(datetime.date.today())))
@@ -139,7 +142,7 @@ class Vocabulary(abc.ABC):
             (rdflib.SDO.license, "http://purl.org/NET/rdflicense/cc-by4.0"),
         ):
             graph.add((scheme, predicate, rdflib.URIRef(iri)))
-        for term in self.terms:
+        for term in cls.terms:
             graph.add((term.iri, a, rdflib.SKOS.Concept))
             if term.preferred_label is not None:
                 graph.add((term.iri, rdflib.SKOS.prefLabel, rdflib.Literal(term.preferred_label, lang="en")))
