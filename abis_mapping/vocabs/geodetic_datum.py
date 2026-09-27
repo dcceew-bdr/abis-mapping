@@ -37,6 +37,7 @@ WGS84 = utils.vocabs.Term(
 
 # Vocabulary
 class GeodeticDatum(utils.vocabs.RestrictedVocabulary):
+    base = "bdr-cv/attribute/geodeticDatum/"
     vocab_id = "GEODETIC_DATUM"
     terms = (AGD66, AGD84, GDA2020, GDA94, WGS84)
 

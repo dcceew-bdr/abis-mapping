@@ -90,6 +90,15 @@ where `output_file` (optional) corresponds to a location to store the resulting 
 Default output is standard out
 if no `output_file` argument provided.
 
+#### Export vocabularies as RDF
+
+The `Vocabulary` class in `abis_mapping/utils/vocabs.py` provides an `export_as_rdf()` class method. It can be run on
+each `Vocabulary` subclass in `abis_mapping/vocabs/*.py` to export its declared terms as a SKOS vocabulary.
+
+The vocabularies were first exported on 2026-09-20. Static copies are maintained for
+<https://resources.bdr.gov.au> in <https://github.com/dcceew-bdr/resources.bdr.gov.au-data/>, under
+`resources/vocabs/items/abis-mapping/`.
+
 ## Frictionless
 
 The project uses the [Frictionless Framework](https://framework.frictionlessdata.io/) to validate and read the

@@ -16,6 +16,7 @@ PART_OF = utils.vocabs.Term(
 
 # Vocabulary
 class RelationshipToRelatedSite(utils.vocabs.RestrictedVocabulary):
+    base = "bdr-cv/attribute/relationshipToRelatedSite/"
     vocab_id = "RELATIONSHIP_TO_RELATED_SITE"
     terms = (SAME_AS, PART_OF)
 

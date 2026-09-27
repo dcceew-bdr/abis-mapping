@@ -57,6 +57,7 @@ WA = utils.vocabs.Term(
 
 # Vocabulary
 class ConservationAuthority(utils.vocabs.RestrictedVocabulary):
+    base = "bdr-cv/attribute/conservationAuthority/"
     vocab_id = "CONSERVATION_AUTHORITY"
     terms = (ACT, EPBC, NSW, NT, QLD, SA, TAS, VIC, WA)
     publish = False

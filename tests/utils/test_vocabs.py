@@ -1,6 +1,8 @@
 """Provides Unit Tests for the `abis_mapping.utils.vocabs` module"""
 
 # Standard
+import datetime
+from pathlib import Path
 import textwrap
 
 # Third-Party
@@ -192,3 +194,44 @@ def test_get_flexible_vocab_with_unknown_vocab() -> None:
         match=r"Key UNKNOWN not found in registry.",
     ):
         abis_mapping.utils.vocabs.get_flexible_vocab("UNKNOWN")
+
+
+@pytest.mark.parametrize("flexible", [True, False])
+def test_export_as_rdf(tmp_path: Path, flexible: bool) -> None:
+    """Export both vocabulary kinds without requiring runtime mapping state."""
+    vocabs = abis_mapping.utils.vocabs
+    term = vocabs.Term(("Preferred", "Alias"), rdflib.URIRef("https://example.org/term"), "Term definition")
+
+    class ExportFlexibleVocabulary(vocabs.FlexibleVocabulary):
+        vocab_id = "EXPORT_TEST"
+        base = "test/export/"
+        terms = (term,)
+        definition = rdflib.Literal("Scheme definition")
+        default = term
+        broader = rdflib.URIRef("https://example.org/broader")
+        proposed_scheme = rdflib.URIRef("https://example.org/ignored")
+
+    class ExportRestrictedVocabulary(vocabs.RestrictedVocabulary):
+        vocab_id = "EXPORT_TEST"
+        base = "test/export/"
+        terms = (term,)
+        definition = rdflib.Literal("Scheme definition")
+        broader = rdflib.URIRef("https://example.org/broader")
+
+    vocab_class: type[vocabs.Vocabulary] = ExportFlexibleVocabulary if flexible else ExportRestrictedVocabulary
+    path = vocab_class.export_as_rdf(tmp_path / "export.ttl")
+    graph = rdflib.Graph().parse(path)
+    scheme = rdflib.URIRef("https://linked.data.gov.au/dataset/bdr/test/export")
+    assert (scheme, rdflib.RDF.type, rdflib.SKOS.ConceptScheme) in graph
+    assert (scheme, rdflib.SKOS.hasTopConcept, term.iri) in graph
+    for predicate in (rdflib.RDFS.isDefinedBy, rdflib.SKOS.topConceptOf, rdflib.SKOS.inScheme):
+        assert (term.iri, predicate, scheme) in graph
+    assert (term.iri, rdflib.SKOS.prefLabel, rdflib.Literal("Preferred", lang="en")) in graph
+    assert (term.iri, rdflib.SKOS.altLabel, rdflib.Literal("Alias", lang="en")) in graph
+    definition = str(graph.value(scheme, rdflib.SKOS.definition))
+    assert ("This is an open-ended vocabulary" if flexible else "This is a closed vocabulary") in definition
+    assert "\n\nProposed as narrower terms of https://example.org/broader" in definition
+    assert graph.value(scheme, rdflib.SDO.dateCreated) == rdflib.Literal(datetime.date(2026, 9, 20))
+    assert graph.value(scheme, rdflib.SDO.dateModified) == rdflib.Literal(datetime.date.today())
+    assert rdflib.URIRef("https://example.org/ignored") not in set(graph.all_nodes())
+    assert rdflib.Graph().parse(vocab_class.export_as_rdf(path)).isomorphic(graph)
