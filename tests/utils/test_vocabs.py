@@ -26,6 +26,8 @@ def test_vocabs_term() -> None:
         labels=("A", "B", "C"),
         iri=rdflib.URIRef("D"),
         description="E",
+        notations=("N",),
+        replaces=(rdflib.URIRef("OLD"),),
     )
 
     # Test Mapping
@@ -33,6 +35,7 @@ def test_vocabs_term() -> None:
         "A": rdflib.URIRef("D"),
         "B": rdflib.URIRef("D"),
         "C": rdflib.URIRef("D"),
+        "N": rdflib.URIRef("D"),
     }
 
     # Test Match
@@ -42,7 +45,10 @@ def test_vocabs_term() -> None:
     assert term.match("B")
     assert term.match("c")
     assert term.match("C")
+    assert term.match("n")
+    assert term.match("N")
     assert not term.match("X")
+    assert term.replaces == (rdflib.URIRef("OLD"),)
 
 
 def test_vocabs_restricted_vocab() -> None:
@@ -142,6 +148,38 @@ def test_vocabs_flexible_vocab() -> None:
         vocab.get(None)  # No Default
 
 
+def test_vocabs_flexible_vocab_proposed_collection(tmp_path: Path) -> None:
+    """Treat a proposed collection as membership, not a broader concept."""
+
+    class Vocab(abis_mapping.utils.vocabs.FlexibleVocabulary):
+        vocab_id = "TEST_COLLECTION"
+        definition = rdflib.Literal("definition")
+        base = "base/"
+        proposed_scheme = rdflib.URIRef("http://proposed_scheme")
+        broader = None
+        proposed_collection = rdflib.URIRef("http://collection")
+        default = None
+        terms = ()
+
+    graph = abis_mapping.utils.rdf.create_graph()
+    vocab = Vocab(graph=graph, source=helpers.TEST_DATASET_IRI, submitted_on_date=helpers.TEST_SUBMITTED_ON_DATE)
+    iri = vocab.get("C")
+
+    assert (iri, rdflib.SKOS.broader, Vocab.proposed_collection) not in graph
+    assert (
+        iri,
+        rdflib.SKOS.scopeNote,
+        rdflib.Literal("This concept is proposed as a member of this collection: http://collection"),
+    ) in graph
+
+    exported = rdflib.Graph().parse(Vocab.export_as_rdf(tmp_path / "collection.ttl"))
+    definition = str(
+        exported.value(rdflib.URIRef("https://linked.data.gov.au/dataset/bdr/base"), rdflib.SKOS.definition)
+    )
+    assert "Concepts in this vocabulary are proposed as members of the SKOS collection http://collection." in definition
+    assert "narrower terms" not in definition
+
+
 def test_vocab_register_id() -> None:
     """Tests that vocabs get registered at import."""
     assert len(abis_mapping.utils.vocabs._id_registry) > 0
@@ -200,13 +238,20 @@ def test_get_flexible_vocab_with_unknown_vocab() -> None:
 def test_export_as_rdf(tmp_path: Path, flexible: bool) -> None:
     """Export both vocabulary kinds without requiring runtime mapping state."""
     vocabs = abis_mapping.utils.vocabs
-    term = vocabs.Term(("Preferred", "Alias"), rdflib.URIRef("https://example.org/term"), "Term definition")
+    term = vocabs.Term(
+        ("Preferred", "Alias"),
+        rdflib.URIRef("https://example.org/term"),
+        "Term definition",
+        notations=("P1",),
+        replaces=(rdflib.URIRef("https://example.org/old-term"),),
+    )
 
     class ExportFlexibleVocabulary(vocabs.FlexibleVocabulary):
         vocab_id = "EXPORT_TEST"
         base = "test/export/"
         terms = (term,)
         definition = rdflib.Literal("Scheme definition")
+        history_note = rdflib.Literal("Scheme history", lang="en")
         default = term
         broader = rdflib.URIRef("https://example.org/broader")
         proposed_scheme = rdflib.URIRef("https://example.org/ignored")
@@ -216,6 +261,7 @@ def test_export_as_rdf(tmp_path: Path, flexible: bool) -> None:
         base = "test/export/"
         terms = (term,)
         definition = rdflib.Literal("Scheme definition")
+        history_note = rdflib.Literal("Scheme history", lang="en")
         broader = rdflib.URIRef("https://example.org/broader")
 
     vocab_class: type[vocabs.Vocabulary] = ExportFlexibleVocabulary if flexible else ExportRestrictedVocabulary
@@ -228,6 +274,9 @@ def test_export_as_rdf(tmp_path: Path, flexible: bool) -> None:
         assert (term.iri, predicate, scheme) in graph
     assert (term.iri, rdflib.SKOS.prefLabel, rdflib.Literal("Preferred", lang="en")) in graph
     assert (term.iri, rdflib.SKOS.altLabel, rdflib.Literal("Alias", lang="en")) in graph
+    assert (term.iri, rdflib.SKOS.notation, rdflib.Literal("P1")) in graph
+    assert (term.iri, rdflib.DCTERMS.replaces, rdflib.URIRef("https://example.org/old-term")) in graph
+    assert (scheme, rdflib.SKOS.historyNote, rdflib.Literal("Scheme history", lang="en")) in graph
     definition = str(graph.value(scheme, rdflib.SKOS.definition))
     assert ("This is an open-ended vocabulary" if flexible else "This is a closed vocabulary") in definition
     assert "\n\nProposed as narrower terms of https://example.org/broader" in definition

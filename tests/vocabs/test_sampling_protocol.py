@@ -1,5 +1,8 @@
 """Tests the sampling protocol vocabulary."""
 
+# Standard
+from pathlib import Path
+
 # Third-Party
 import pytest
 import rdflib
@@ -38,3 +41,32 @@ def test_wildnet_code_uses_canonical_iri(wildnet_code: str, canonical_iri: str) 
 
     assert vocab.get(wildnet_code) == rdflib.URIRef(canonical_iri)
     assert len(graph) == 0
+
+
+def test_wildnet_codes_export_as_notations(tmp_path: Path) -> None:
+    """Publishes WildNet codes as notations rather than lexical labels."""
+    vocab_class = utils.vocabs.get_flexible_vocab("SAMPLING_PROTOCOL")
+    graph = rdflib.Graph().parse(vocab_class.export_as_rdf(tmp_path / "sampling_protocol.ttl"))
+
+    for term in vocab_class.terms:
+        for notation in term.notations:
+            assert (term.iri, rdflib.SKOS.notation, rdflib.Literal(notation)) in graph
+            assert (term.iri, rdflib.SKOS.altLabel, rdflib.Literal(notation, lang="en")) not in graph
+            assert len(term.replaces) == 1
+            assert (term.iri, rdflib.DCTERMS.replaces, term.replaces[0]) in graph
+
+    definition = str(
+        graph.value(
+            rdflib.URIRef("https://linked.data.gov.au/dataset/bdr/bdr-cv/methods/samplingProtocol"),
+            rdflib.SKOS.definition,
+        )
+    )
+    assert "proposed as members of the SKOS collection" in definition
+    assert "narrower terms" not in definition
+    assert (
+        graph.value(
+            rdflib.URIRef("https://linked.data.gov.au/dataset/bdr/bdr-cv/methods/samplingProtocol"),
+            rdflib.SKOS.historyNote,
+        )
+        is not None
+    )

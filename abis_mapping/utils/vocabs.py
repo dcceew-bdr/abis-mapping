@@ -29,6 +29,8 @@ class Term:
         labels: Iterable[str],
         iri: rdflib.URIRef,
         description: str,
+        notations: Iterable[str] = (),
+        replaces: Iterable[rdflib.URIRef] = (),
     ) -> None:
         """Instantiates a Vocabulary Term.
 
@@ -36,21 +38,26 @@ class Term:
             labels (Iterable[str]): Labels for the vocabulary term to match on.
             iri: rdflib.URIRef: IRI for the vocabulary term.
             description (str): Description for the term.
+            notations (Iterable[str]): Codes for the vocabulary term to match on.
+            replaces (Iterable[rdflib.URIRef]): Former term IRIs replaced by this term.
         """
         # Set Instance Attributes
         self.labels: Final[tuple[str, ...]] = tuple(labels)
         self.sanitized_labels: Final[tuple[str, ...]] = tuple(strings.sanitise(label) for label in labels)  # Sanitise
+        self.notations: Final[tuple[str, ...]] = tuple(notations)
+        self.sanitized_notations: Final[tuple[str, ...]] = tuple(strings.sanitise(notation) for notation in notations)
+        self.replaces: Final[tuple[rdflib.URIRef, ...]] = tuple(replaces)
         self.iri: Final[rdflib.URIRef] = iri
         self.description: Final[str] = description
 
     def to_mapping(self) -> dict[str, rdflib.URIRef]:
-        """Converts the term to a mapping of all labels to IRI.
+        """Converts the term to a mapping of all labels and notations to IRI.
 
         Returns:
-            dict[str, rdflib.URIRef]: Mapping of labels to IRI.
+            dict[str, rdflib.URIRef]: Mapping of labels and notations to IRI.
         """
         # Generate and Return
-        return {key: self.iri for key in self.sanitized_labels}
+        return {key: self.iri for key in self.sanitized_labels + self.sanitized_notations}
 
     def match(self, value: str) -> bool:
         """Determines whether a specified value matches this term.
@@ -62,7 +69,7 @@ class Term:
             bool: Whether the value matches this term.
         """
         # Sanitise, Check and Return
-        return strings.sanitise(value) in self.sanitized_labels
+        return strings.sanitise(value) in self.sanitized_labels + self.sanitized_notations
 
     @property
     def preferred_label(self) -> str | None:
@@ -98,6 +105,7 @@ class Vocabulary(abc.ABC):
     terms: Iterable[Term]
     publish: bool = True
     base: str
+    history_note: rdflib.Literal | None = None
 
     @classmethod
     def export_as_rdf(cls, destination: str | Path) -> Path:
@@ -117,6 +125,7 @@ class Vocabulary(abc.ABC):
         graph = rdflib.Graph()
         scheme = rdflib.URIRef(str(namespaces.DATASET_BDR) + cls.base.strip("/"))
         graph.bind("cs", rdflib.Namespace(str(scheme)))
+        graph.bind("dcterms", rdflib.DCTERMS)
         graph.bind("schema", rdflib.SDO)
         graph.bind("skos", rdflib.SKOS)
         graph.bind("rdfs", rdflib.RDFS)
@@ -129,10 +138,16 @@ class Vocabulary(abc.ABC):
             paragraphs.append("This is a closed vocabulary")
         if broader := getattr(cls, "broader", None):
             paragraphs.append(f"Proposed as narrower terms of {broader}")
+        if proposed_collection := getattr(cls, "proposed_collection", None):
+            paragraphs.append(
+                f"Concepts in this vocabulary are proposed as members of the SKOS collection {proposed_collection}."
+            )
         paragraphs.append(
             "This vocabulary was generated from application code used to convert CSV data to ABIS RDF in the repository https://github.com/dcceew-bdr/abis-mapping."
         )
         graph.add((scheme, rdflib.SKOS.definition, rdflib.Literal("\n\n".join(paragraphs), lang="en")))
+        if cls.history_note is not None:
+            graph.add((scheme, rdflib.SKOS.historyNote, cls.history_note))
         graph.add((scheme, rdflib.SDO.dateCreated, rdflib.Literal(datetime.date(2026, 9, 20))))
         graph.add((scheme, rdflib.SDO.dateModified, rdflib.Literal(datetime.date.today())))
         for predicate, iri in (
@@ -148,6 +163,10 @@ class Vocabulary(abc.ABC):
                 graph.add((term.iri, rdflib.SKOS.prefLabel, rdflib.Literal(term.preferred_label, lang="en")))
             for label in term.alternative_labels:
                 graph.add((term.iri, rdflib.SKOS.altLabel, rdflib.Literal(label, lang="en")))
+            for notation in term.notations:
+                graph.add((term.iri, rdflib.SKOS.notation, rdflib.Literal(notation)))
+            for replaced_iri in term.replaces:
+                graph.add((term.iri, rdflib.DCTERMS.replaces, replaced_iri))
             graph.add((term.iri, rdflib.SKOS.definition, rdflib.Literal(term.description, lang="en")))
             graph.add((scheme, rdflib.SKOS.hasTopConcept, term.iri))
             for predicate in (rdflib.RDFS.isDefinedBy, rdflib.SKOS.topConceptOf, rdflib.SKOS.inScheme):
@@ -222,6 +241,8 @@ class FlexibleVocabulary(Vocabulary):
             when creating a new vocabulary term 'on the fly'.
         broader (Optional[rdflib.URIRef]): Optional broader IRI to use when
             creating a new vocabulary term 'on the fly'.
+        proposed_collection (Optional[rdflib.URIRef]): Optional collection IRI
+            for which a new vocabulary term is proposed as a member.
         scope_note (Optional[rdflib.Literal]): Optional scope note to use when
             creating a new vocabulary term 'on the fly'.
             This can be set on the subclass as a global default, and/or set on individual
@@ -235,6 +256,7 @@ class FlexibleVocabulary(Vocabulary):
     base: str
     proposed_scheme: rdflib.URIRef
     broader: Optional[rdflib.URIRef]
+    proposed_collection: Optional[rdflib.URIRef] = None
     scope_note: Optional[rdflib.Literal] = None
     default: Optional[Term]
 
@@ -357,6 +379,17 @@ class FlexibleVocabulary(Vocabulary):
         if self.broader:
             # Add Broader
             self.graph.add((iri, rdflib.SKOS.broader, self.broader))
+
+        if self.proposed_collection:
+            self.graph.add(
+                (
+                    iri,
+                    rdflib.SKOS.scopeNote,
+                    rdflib.Literal(
+                        f"This concept is proposed as a member of this collection: {self.proposed_collection}"
+                    ),
+                )
+            )
 
         # Construct Source URI Literal
         source_literal = rdflib.Literal(self.source, datatype=rdflib.XSD.anyURI)
