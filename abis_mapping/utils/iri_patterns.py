@@ -17,6 +17,45 @@ from abis_mapping import utils
 from typing import Literal
 
 
+# Keep these exact legacy-to-canonical mappings aligned with the BDR datatype
+# vocabulary's dcterms:replaces statements. Unknown datatypes retain the existing pattern.
+_DATATYPE_IRI_REPLACEMENTS = {
+    rdflib.URIRef("https://linked.data.gov.au/dataset/bdr/datatypes/recordID/act-atlas"): rdflib.URIRef(
+        "https://linked.data.gov.au/dataset/bdr/datatypes/act-atlas"
+    ),
+    rdflib.URIRef("https://linked.data.gov.au/dataset/bdr/datatypes/recordID/bdbsa"): rdflib.URIRef(
+        "https://linked.data.gov.au/dataset/bdr/datatypes/bdbsa"
+    ),
+    rdflib.URIRef("https://linked.data.gov.au/dataset/bdr/datatypes/recordID/birdlife"): rdflib.URIRef(
+        "https://linked.data.gov.au/dataset/bdr/datatypes/birdlife"
+    ),
+    rdflib.URIRef("https://linked.data.gov.au/dataset/bdr/datatypes/recordID/CSIRO"): rdflib.URIRef(
+        "https://linked.data.gov.au/dataset/bdr/datatypes/csiro"
+    ),
+    rdflib.URIRef("https://linked.data.gov.au/dataset/bdr/datatypes/recordID/csiro"): rdflib.URIRef(
+        "https://linked.data.gov.au/dataset/bdr/datatypes/csiro"
+    ),
+    rdflib.URIRef("https://linked.data.gov.au/dataset/bdr/datatypes/recordID/nsw-bionet"): rdflib.URIRef(
+        "https://linked.data.gov.au/dataset/bdr/datatypes/nsw-bionet"
+    ),
+    rdflib.URIRef("https://linked.data.gov.au/dataset/bdr/datatypes/recordID/NT-Atlas"): rdflib.URIRef(
+        "https://linked.data.gov.au/dataset/bdr/datatypes/NT-Atlas"
+    ),
+    rdflib.URIRef("https://linked.data.gov.au/dataset/bdr/datatypes/recordID/Qld-WildNet"): rdflib.URIRef(
+        "https://linked.data.gov.au/dataset/bdr/datatypes/Qld-WildNet"
+    ),
+    rdflib.URIRef("https://linked.data.gov.au/dataset/bdr/datatypes/recordID/tas-nva"): rdflib.URIRef(
+        "https://linked.data.gov.au/dataset/bdr/datatypes/tas-nva"
+    ),
+    rdflib.URIRef("https://linked.data.gov.au/dataset/bdr/datatypes/recordID/vic-deeca"): rdflib.URIRef(
+        "https://linked.data.gov.au/dataset/bdr/datatypes/vic-deeca"
+    ),
+    rdflib.URIRef("https://linked.data.gov.au/dataset/bdr/datatypes/recordID/wa-bio"): rdflib.URIRef(
+        "https://linked.data.gov.au/dataset/bdr/datatypes/wa-bio"
+    ),
+}
+
+
 def survey_iri(
     base_iri: rdflib.Namespace,
     survey_id: str,
@@ -211,12 +250,13 @@ def datatype_iri(
     Returns:
         URIRef for the rdfs:Datatype node.
     """
-    return utils.rdf.uri_slugified(
+    datatype = utils.rdf.uri_slugified(
         utils.namespaces.DATASET_BDR,
         "datatypes/{identifier_type}/{identifier_source}",
         identifier_type=identifier_type,
         identifier_source=identifier_source,
     )
+    return _DATATYPE_IRI_REPLACEMENTS.get(datatype, datatype)
 
 
 @functools.lru_cache()
