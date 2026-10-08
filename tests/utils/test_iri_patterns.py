@@ -1,6 +1,38 @@
 import rdflib
+import pytest
 
 from abis_mapping.utils import iri_patterns
+
+
+@pytest.mark.parametrize(
+    ("identifier_source", "canonical_source"),
+    [
+        ("act-atlas", "act-atlas"),
+        ("bdbsa", "bdbsa"),
+        ("birdlife", "birdlife"),
+        ("CSIRO", "csiro"),
+        ("csiro", "csiro"),
+        ("nsw-bionet", "nsw-bionet"),
+        ("NT-Atlas", "NT-Atlas"),
+        ("Qld-WildNet", "Qld-WildNet"),
+        ("tas-nva", "tas-nva"),
+        ("vic-deeca", "vic-deeca"),
+        ("wa-bio", "wa-bio"),
+    ],
+)
+def test_record_id_datatype_iri_replacement(identifier_source: str, canonical_source: str) -> None:
+    result = iri_patterns.datatype_iri("recordID", identifier_source)
+    assert result == rdflib.URIRef(f"https://linked.data.gov.au/dataset/bdr/datatypes/{canonical_source}")
+
+
+def test_record_id_datatype_iri_without_replacement() -> None:
+    result = iri_patterns.datatype_iri("recordID", "WAM")
+    assert result == rdflib.URIRef("https://linked.data.gov.au/dataset/bdr/datatypes/recordID/WAM")
+
+
+def test_other_identifier_datatype_iri() -> None:
+    result = iri_patterns.datatype_iri("catalogNumber", "WAM")
+    assert result == rdflib.URIRef("https://linked.data.gov.au/dataset/bdr/datatypes/catalogNumber/WAM")
 
 
 def test_site_iri() -> None:
