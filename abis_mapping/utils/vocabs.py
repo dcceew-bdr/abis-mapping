@@ -31,6 +31,11 @@ class Term:
         description: str,
         notations: Iterable[str] = (),
         replaces: Iterable[rdflib.URIRef] = (),
+        *,
+        defined_by: rdflib.URIRef | None = None,
+        scope_note: str | None = None,
+        examples: Iterable[str] = (),
+        exact_matches: Iterable[rdflib.URIRef] = (),
     ) -> None:
         """Instantiates a Vocabulary Term.
 
@@ -40,6 +45,10 @@ class Term:
             description (str): Description for the term.
             notations (Iterable[str]): Codes for the vocabulary term to match on.
             replaces (Iterable[rdflib.URIRef]): Former term IRIs replaced by this term.
+            defined_by (rdflib.URIRef | None): Authoritative vocabulary IRI; defaults to the exported scheme.
+            scope_note (str | None): Explanation of the intended scope of the term.
+            examples (Iterable[str]): Examples illustrating the term.
+            exact_matches (Iterable[rdflib.URIRef]): Reviewed equivalent concepts in other vocabularies.
         """
         # Set Instance Attributes
         self.labels: Final[tuple[str, ...]] = tuple(labels)
@@ -49,6 +58,10 @@ class Term:
         self.replaces: Final[tuple[rdflib.URIRef, ...]] = tuple(replaces)
         self.iri: Final[rdflib.URIRef] = iri
         self.description: Final[str] = description
+        self.defined_by: Final[rdflib.URIRef | None] = defined_by
+        self.scope_note: Final[str | None] = scope_note
+        self.examples: Final[tuple[str, ...]] = tuple(examples)
+        self.exact_matches: Final[tuple[rdflib.URIRef, ...]] = tuple(exact_matches)
 
     def to_mapping(self) -> dict[str, rdflib.URIRef]:
         """Converts the term to a mapping of all labels and notations to IRI.
@@ -168,8 +181,15 @@ class Vocabulary(abc.ABC):
             for replaced_iri in term.replaces:
                 graph.add((term.iri, rdflib.DCTERMS.replaces, replaced_iri))
             graph.add((term.iri, rdflib.SKOS.definition, rdflib.Literal(term.description, lang="en")))
+            if term.scope_note is not None:
+                graph.add((term.iri, rdflib.SKOS.scopeNote, rdflib.Literal(term.scope_note, lang="en")))
+            for example in term.examples:
+                graph.add((term.iri, rdflib.SKOS.example, rdflib.Literal(example, lang="en")))
+            for match in term.exact_matches:
+                graph.add((term.iri, rdflib.SKOS.exactMatch, match))
             graph.add((scheme, rdflib.SKOS.hasTopConcept, term.iri))
-            for predicate in (rdflib.RDFS.isDefinedBy, rdflib.SKOS.topConceptOf, rdflib.SKOS.inScheme):
+            graph.add((term.iri, rdflib.RDFS.isDefinedBy, term.defined_by if term.defined_by is not None else scheme))
+            for predicate in (rdflib.SKOS.topConceptOf, rdflib.SKOS.inScheme):
                 graph.add((term.iri, predicate, scheme))
         path.parent.mkdir(parents=True, exist_ok=True)
         graph.serialize(destination=path, format="longturtle")

@@ -1,0 +1,101 @@
+{
+  "http://linked.data.gov.au/def/tern-cv/22829f2d-461d-4cf6-acbc-5b8f7d2d9c77": [
+    "http://rs.gbif.org/vocabulary/gbif/rank/section"
+  ],
+  "http://linked.data.gov.au/def/tern-cv/2b6fae57-f28e-4f24-b6f9-19f114dbb61e": [
+    "http://rs.gbif.org/vocabulary/gbif/rank/species"
+  ],
+  "http://linked.data.gov.au/def/tern-cv/367a27ee-7c6f-48a0-ba50-ff137ed1fe0c": [
+    "http://rs.gbif.org/vocabulary/gbif/rank/subsection"
+  ],
+  "http://linked.data.gov.au/def/tern-cv/3ade9854-d90f-4709-bb5a-260d62a2c647": [
+    "http://rs.gbif.org/vocabulary/gbif/rank/phylum"
+  ],
+  "http://linked.data.gov.au/def/tern-cv/40d5f3d3-dfbb-4718-9f66-29b5f735142f": [
+    "http://rs.gbif.org/vocabulary/gbif/rank/tribe"
+  ],
+  "http://linked.data.gov.au/def/tern-cv/445b6830-8e31-4fab-889b-f18f88f382c0": [
+    "http://rs.gbif.org/vocabulary/gbif/rank/infraspecificname"
+  ],
+  "http://linked.data.gov.au/def/tern-cv/45d214c6-894b-4fe5-a9ce-2db3a1fc3a7d": [
+    "http://rs.gbif.org/vocabulary/gbif/rank/cultivarGroup"
+  ],
+  "http://linked.data.gov.au/def/tern-cv/49849796-fc73-444f-a375-32fc0048a18b": [
+    "http://rs.gbif.org/vocabulary/gbif/rank/subfamily"
+  ],
+  "http://linked.data.gov.au/def/tern-cv/50d96a8d-aa2a-4629-9caa-76637c619851": [
+    "http://rs.gbif.org/vocabulary/gbif/rank/superfamily"
+  ],
+  "http://linked.data.gov.au/def/tern-cv/5fb9982c-8249-4d58-9f38-659e8c7c6daf": [
+    "http://rs.gbif.org/vocabulary/gbif/rank/genus"
+  ],
+  "http://linked.data.gov.au/def/tern-cv/61a34b22-555e-431d-848c-95bb6a364a9a": [
+    "http://rs.gbif.org/vocabulary/gbif/rank/subseries"
+  ],
+  "http://linked.data.gov.au/def/tern-cv/6605eecb-e8ba-47fc-a364-81aa3ba5ce69": [
+    "http://rs.gbif.org/vocabulary/gbif/rank/order"
+  ],
+  "http://linked.data.gov.au/def/tern-cv/6e50f0de-0847-4db3-8bc3-f7e796ed32bf": [
+    "http://rs.gbif.org/vocabulary/gbif/rank/unranked"
+  ],
+  "http://linked.data.gov.au/def/tern-cv/6fa4ff0a-acc8-482b-a574-0ffbbab83ca5": [
+    "http://rs.gbif.org/vocabulary/gbif/rank/variety"
+  ],
+  "http://linked.data.gov.au/def/tern-cv/7abb3e62-ec02-4b7d-b057-e4380d66dd72": [
+    "http://rs.gbif.org/vocabulary/gbif/rank/subspecies"
+  ],
+  "http://linked.data.gov.au/def/tern-cv/86a64fd0-7aa6-4ef1-93cc-45ae722ec6a7": [
+    "http://rs.gbif.org/vocabulary/gbif/rank/subgenus"
+  ],
+  "http://linked.data.gov.au/def/tern-cv/892fed0b-70cc-48d4-ac3f-0b0b495cc0c0": [
+    "http://rs.gbif.org/vocabulary/gbif/rank/cultivar"
+  ],
+  "http://linked.data.gov.au/def/tern-cv/8d227e73-f906-4d5f-9f15-8ae8bf29b2ce": [
+    "http://rs.gbif.org/vocabulary/gbif/rank/infragenericname"
+  ],
+  "http://linked.data.gov.au/def/tern-cv/9eeb2dcf-ec0c-4541-a409-28722e9b4f26": [
+    "http://rs.gbif.org/vocabulary/gbif/rank/subform"
+  ],
+  "http://linked.data.gov.au/def/tern-cv/a27dc8c9-25ed-4a82-b797-b9dd0add6da2": [
+    "http://rs.gbif.org/vocabulary/gbif/rank/kingdom"
+  ],
+  "http://linked.data.gov.au/def/tern-cv/a68fa217-969b-48ea-a08a-bb7618079edb": [
+    "http://rs.gbif.org/vocabulary/gbif/rank/suborder"
+  ],
+  "http://linked.data.gov.au/def/tern-cv/a8889e2e-8eb3-4ed3-8d32-3974adae6158": [
+    "http://rs.gbif.org/vocabulary/gbif/rank/supragenericname"
+  ],
+  "http://linked.data.gov.au/def/tern-cv/b06ee648-55e2-435f-b453-2f6639addbcb": [
+    "http://rs.gbif.org/vocabulary/gbif/rank/infrasubspecificname"
+  ],
+  "http://linked.data.gov.au/def/tern-cv/b49af045-88c2-44c0-ad34-901d1ff46d7a": [
+    "http://rs.gbif.org/vocabulary/gbif/rank/infraorder"
+  ],
+  "http://linked.data.gov.au/def/tern-cv/baefb9ce-5f98-44a7-acc3-5bd1247c8d54": [
+    "http://rs.gbif.org/vocabulary/gbif/rank/subtribe"
+  ],
+  "http://linked.data.gov.au/def/tern-cv/bc6b552f-5ab0-4d46-a236-a99fc2005c93": [
+    "http://rs.gbif.org/vocabulary/gbif/rank/speciesAggregate"
+  ],
+  "http://linked.data.gov.au/def/tern-cv/cb2627f0-e121-474b-a354-dd0e392daa84": [
+    "http://rs.gbif.org/vocabulary/gbif/rank/subvariety"
+  ],
+  "http://linked.data.gov.au/def/tern-cv/d3f48baa-7a29-4b4f-9d92-bb5276ab8710": [
+    "http://rs.gbif.org/vocabulary/gbif/rank/series"
+  ],
+  "http://linked.data.gov.au/def/tern-cv/d43fd16c-73c3-4578-a359-7168a0876aaf": [
+    "http://rs.gbif.org/vocabulary/gbif/rank/informal"
+  ],
+  "http://linked.data.gov.au/def/tern-cv/dae4d56e-7440-4ddd-90e7-9924b455ca40": [
+    "http://rs.gbif.org/vocabulary/gbif/rank/form"
+  ],
+  "http://linked.data.gov.au/def/tern-cv/db985a35-6edb-4ba1-8939-b0a7b1efa287": [
+    "http://rs.gbif.org/vocabulary/gbif/rank/class"
+  ],
+  "http://linked.data.gov.au/def/tern-cv/f2e2f14f-56d4-4d2f-9a37-7e140133cbd2": [
+    "http://rs.gbif.org/vocabulary/gbif/rank/family"
+  ],
+  "http://linked.data.gov.au/def/tern-cv/fdbe211f-33d6-4446-a1fb-5eb8de45dd57": [
+    "http://rs.gbif.org/vocabulary/gbif/rank/subspecificAggregate"
+  ]
+}
