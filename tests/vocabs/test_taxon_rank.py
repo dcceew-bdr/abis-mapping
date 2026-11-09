@@ -10,6 +10,7 @@ import pytest
 import rdflib
 
 # Local
+from abis_mapping.utils.vocabs import Term
 from abis_mapping.vocabs import taxon_rank
 
 
@@ -79,7 +80,9 @@ def test_export_preserves_cultivar_editorial_metadata(tmp_path: Path) -> None:
         ),
     ),
 )
-def test_export_separates_aggregate_definitions_from_scope(tmp_path, term, definition, scope_fragment):
+def test_export_separates_aggregate_definitions_from_scope(
+    tmp_path: Path, term: Term, definition: str, scope_fragment: str
+) -> None:
     graph = rdflib.Graph().parse(taxon_rank.TaxonRank.export_as_rdf(tmp_path / "taxon_rank.ttl"))
     assert set(graph.objects(term.iri, rdflib.SKOS.definition)) == {rdflib.Literal(definition, lang="en")}
     scope = graph.value(term.iri, rdflib.SKOS.scopeNote)
