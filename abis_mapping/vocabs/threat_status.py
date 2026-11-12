@@ -57,105 +57,65 @@ ACT_VULNERABLE = utils.vocabs.Term(
     iri=utils.rdf.uri("threatStatus/ACT/vulnerable", utils.namespaces.EXAMPLE),  # TODO -> Need real URI
     description="Australian Capital Territory, vulnerable.",
 )
-EPBC_CAMBA = utils.vocabs.Term(
-    labels=(
-        "EPBC/CAMBA",
-        "ENVIRONMENT PROTECTION AND BIODIVERSITY CONSERVATION/CAMBA",
-    ),
-    iri=utils.rdf.uri("threatStatus/EPBC/CAMBA", utils.namespaces.EXAMPLE),  # TODO -> Need real URI
-    description="Environment Protection and Biodiversity Conservation, CAMBA.",
-)
 EPBC_CD = utils.vocabs.Term(
     labels=(
-        "EPBC/CD",
         "EPBC/CONSERVATION DEPENDENT",
-        "ENVIRONMENT PROTECTION AND BIODIVERSITY CONSERVATION/CD",
+        "EPBC/CD",
         "ENVIRONMENT PROTECTION AND BIODIVERSITY CONSERVATION/CONSERVATION DEPENDENT",
+        "ENVIRONMENT PROTECTION AND BIODIVERSITY CONSERVATION/CD",
     ),
     iri=utils.rdf.uri("threatStatus/EPBC/conservation-dependent", utils.namespaces.EXAMPLE),  # TODO -> Need real URI
     description="Environment Protection and Biodiversity Conservation, conservation dependent.",
 )
-EPBC_CE = utils.vocabs.Term(
+EPBC_CR = utils.vocabs.Term(
     labels=(
-        "EPBC/CE",
         "EPBC/CRITICALLY ENDANGERED",
         "EPBC/CR",
-        "ENVIRONMENT PROTECTION AND BIODIVERSITY CONSERVATION/CE",
         "ENVIRONMENT PROTECTION AND BIODIVERSITY CONSERVATION/CRITICALLY ENDANGERED",
         "ENVIRONMENT PROTECTION AND BIODIVERSITY CONSERVATION/CR",
     ),
     iri=utils.rdf.uri("threatStatus/EPBC/critically-endangered", utils.namespaces.EXAMPLE),  # TODO -> Need real URI
     description="Environment Protection and Biodiversity Conservation, critically endangered.",
 )
-EPBC_CITES = utils.vocabs.Term(
+EPBC_EN = utils.vocabs.Term(
     labels=(
-        "EPBC/CITES",
-        "ENVIRONMENT PROTECTION AND BIODIVERSITY CONSERVATION/CITES",
-    ),
-    iri=utils.rdf.uri("threatStatus/EPBC/CITES", utils.namespaces.EXAMPLE),  # TODO -> Need real URI
-    description="Environment Protection and Biodiversity Conservation, cites.",
-)
-EPBC_E = utils.vocabs.Term(
-    labels=(
-        "EPBC/E",
         "EPBC/ENDANGERED",
         "EPBC/EN",
-        "ENVIRONMENT PROTECTION AND BIODIVERSITY CONSERVATION/E",
         "ENVIRONMENT PROTECTION AND BIODIVERSITY CONSERVATION/ENDANGERED",
         "ENVIRONMENT PROTECTION AND BIODIVERSITY CONSERVATION/EN",
     ),
     iri=utils.rdf.uri("threatStatus/EPBC/endangered", utils.namespaces.EXAMPLE),  # TODO -> Need real URI
     description="Environment Protection and Biodiversity Conservation, endangered.",
 )
-EPBC_EX = utils.vocabs.Term(
+EPBC_EW = utils.vocabs.Term(
     labels=(
-        "EPBC/EX",
-        "EPBC/EXTINCT",
-        "ENVIRONMENT PROTECTION AND BIODIVERSITY CONSERVATION/EX",
-        "ENVIRONMENT PROTECTION AND BIODIVERSITY CONSERVATION/EXTINCT",
-    ),
-    iri=utils.rdf.uri("threatStatus/EPBC/extinct", utils.namespaces.EXAMPLE),  # TODO -> Need real URI
-    description="Environment Protection and Biodiversity Conservation, extinct.",
-)
-EPBC_JAMBA = utils.vocabs.Term(
-    labels=(
-        "EPBC/JAMBA",
-        "ENVIRONMENT PROTECTION AND BIODIVERSITY CONSERVATION/JAMBA",
-    ),
-    iri=utils.rdf.uri("threatStatus/EPBC/JAMBA", utils.namespaces.EXAMPLE),  # TODO -> Need real URI
-    description="Environment Protection and Biodiversity Conservation, JAMBA.",
-)
-EPBC_KAMBA = utils.vocabs.Term(
-    labels=(
-        "EPBC/KAMBA",
-        "ENVIRONMENT PROTECTION AND BIODIVERSITY CONSERVATION/KAMBA",
-    ),
-    iri=utils.rdf.uri("threatStatus/EPBC/KAMBA", utils.namespaces.EXAMPLE),  # TODO -> Need real URI
-    description="Environment Protection and Biodiversity Conservation, KAMBA.",
-)
-EPBC_V = utils.vocabs.Term(
-    labels=(
-        "EPBC/V",
-        "EPBC/VULNERABLE",
-        "EPBC/VU",
-        "ENVIRONMENT PROTECTION AND BIODIVERSITY CONSERVATION/V",
-        "ENVIRONMENT PROTECTION AND BIODIVERSITY CONSERVATION/VULNERABLE",
-        "ENVIRONMENT PROTECTION AND BIODIVERSITY CONSERVATION/VU",
-    ),
-    iri=utils.rdf.uri("threatStatus/EPBC/vulnerable", utils.namespaces.EXAMPLE),  # TODO -> Need real URI
-    description="Environment Protection and Biodiversity Conservation, vulnerable.",
-)
-EPBC_XW = utils.vocabs.Term(
-    labels=(
-        "EPBC/XW",
         "EPBC/EXTINCT IN THE WILD",
         "EPBC/EW",
-        "ENVIRONMENT PROTECTION AND BIODIVERSITY CONSERVATION/XW",
         "ENVIRONMENT PROTECTION AND BIODIVERSITY CONSERVATION/EXTINCT IN THE WILD",
         "ENVIRONMENT PROTECTION AND BIODIVERSITY CONSERVATION/EW",
     ),
     iri=utils.rdf.uri("threatStatus/EPBC/extinct-in-the-wild", utils.namespaces.EXAMPLE),  # TODO -> Need real URI
     description="Environment Protection and Biodiversity Conservation, extinct in the wild.",
+)
+EPBC_EX = utils.vocabs.Term(
+    labels=(
+        "EPBC/EXTINCT",
+        "EPBC/EX",
+        "ENVIRONMENT PROTECTION AND BIODIVERSITY CONSERVATION/EXTINCT",
+        "ENVIRONMENT PROTECTION AND BIODIVERSITY CONSERVATION/EX",
+    ),
+    iri=utils.rdf.uri("threatStatus/EPBC/extinct", utils.namespaces.EXAMPLE),  # TODO -> Need real URI
+    description="Environment Protection and Biodiversity Conservation, extinct.",
+)
+EPBC_VU = utils.vocabs.Term(
+    labels=(
+        "EPBC/VULNERABLE",
+        "EPBC/VU",
+        "ENVIRONMENT PROTECTION AND BIODIVERSITY CONSERVATION/VULNERABLE",
+        "ENVIRONMENT PROTECTION AND BIODIVERSITY CONSERVATION/VU",
+    ),
+    iri=utils.rdf.uri("threatStatus/EPBC/vulnerable", utils.namespaces.EXAMPLE),  # TODO -> Need real URI
+    description="Environment Protection and Biodiversity Conservation, vulnerable.",
 )
 NSW_CE = utils.vocabs.Term(
     labels=(
@@ -766,16 +726,12 @@ class ThreatStatus(utils.vocabs.FlexibleVocabulary):
         ACT_EXTINCT,
         ACT_REGIONALLY_CONSERVATION_DEPENDENT,
         ACT_VULNERABLE,
-        EPBC_CAMBA,
         EPBC_CD,
-        EPBC_CE,
-        EPBC_CITES,
-        EPBC_E,
+        EPBC_CR,
+        EPBC_EN,
+        EPBC_EW,
         EPBC_EX,
-        EPBC_JAMBA,
-        EPBC_KAMBA,
-        EPBC_V,
-        EPBC_XW,
+        EPBC_VU,
         NSW_CE,
         NSW_EN,
         NSW_EX,
